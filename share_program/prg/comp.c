@@ -130,12 +130,15 @@ void sym_func(void){
   }
   switch (sym) {
     case PLUS:
+    //足し算用
       fprintf(outfile,"addi  R0,%d\n",num);
     break;
     case MINUS:
+    //引き算用
       fprintf(outfile,"subi  R0,%d\n",num);
     break;
     case TIMES:
+    //掛け算用
       fprintf(outfile,"muli  R0,%d\n",num);
     break;
   }
