@@ -129,7 +129,8 @@ void sym_func(void){
   if(tok.attr == NUMBER){
     num = tok.value;
   }
-fprintf(outfile,"muli  R0,%d\n",num);
+  switch(sym)
+  fprintf(outfile,"muli  R0,%d\n",num);
 }
 void num_func(void){
   fprintf(outfile,"loadi R0,%d \n",tok.value);
