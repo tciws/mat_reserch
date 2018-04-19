@@ -100,7 +100,7 @@ while(1){
     case NUMBER:
         break;
     default:
-        printf("error\n");
+        printf("error!\n");
   }
   if(tok.value == PERIOD || tok.value == END){
     exit(1);
