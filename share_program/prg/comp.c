@@ -109,11 +109,6 @@ while(1){
         num_func();
         break;
     default:
-<<<<<<< HEAD
-        printf("error_hentai!\n");
-=======
-        printf("error_hentai\n");
->>>>>>> master
   }
   if(tok.value == PERIOD || tok.value == END){
     exit(1);
