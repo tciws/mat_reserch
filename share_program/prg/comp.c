@@ -15,6 +15,11 @@ void sym_func(void);
 int push(int dt);
 int pop(void);
 //
+//
+//global
+//rx is register
+int rx[6];
+//
 void compiler(void){
   //printf("hentai");
   init_getsym();
@@ -56,6 +61,9 @@ void error(char *s){
   exit(1);
 }
 void statement(void){
+  for(int i = 0; i < 6 ; i++){
+    rx[i] = 0;
+  }
 while(1){
   //printf("%d\n%d\n",tok.attr,tok.value);
   /*if(tok.attr == RWORD){
@@ -94,13 +102,13 @@ while(1){
 
         }
         else{
-          push(tok.value);
+          sym_func();
         }
         break;
     case NUMBER:
+        num_func();
         break;
     default:
-        printf("error!\n");
   }
   if(tok.value == PERIOD || tok.value == END){
     exit(1);
@@ -113,7 +121,15 @@ while(1){
 void rwo_func(void){
 }
 void sym_func(void){
+  int sym,num;
+  //printf("hentai\n");
+  sym = tok.value;
+  getsym();
+  if(tok.attr == NUMBER){
+    num = tok.value;
+  }
+fprintf(outfile,"muli  R0,%d\n",num);
 }
 void num_func(void){
-
+  fprintf(outfile,"loadi R0,%d \n",tok.value);
 }
