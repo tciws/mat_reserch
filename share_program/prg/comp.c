@@ -95,11 +95,10 @@ while(1){
 */
   switch(tok.attr){
     case RWORD:
-        printf("hentai\n");
+        printf("#%d\n",tok.attr);
         break;
     case SYMBOL:
         if(tok.value == SEMICOLON || tok.value == PERIOD){
-
         }
         else{
           sym_func();
@@ -109,8 +108,9 @@ while(1){
         num_func();
         break;
     default:
+      printf("%d\n",tok.attr);
   }
-  if(tok.value == PERIOD || tok.value == END){
+  if(tok.value == PERIOD){
     exit(1);
     }
   else{
@@ -128,7 +128,18 @@ void sym_func(void){
   if(tok.attr == NUMBER){
     num = tok.value;
   }
-fprintf(outfile,"muli  R0,%d\n",num);
+  switch (sym) {
+    case PLUS:
+      fprintf(outfile,"addi  R0,%d\n",num);
+    break;
+    case MINUS:
+      fprintf(outfile,"subi  R0,%d\n",num);
+    break;
+    case TIMES:
+      fprintf(outfile,"muli  R0,%d\n",num);
+    break;
+  }
+  //fprintf(outfile,"muli  R0,%d\n",num);
 }
 void num_func(void){
   fprintf(outfile,"loadi R0,%d \n",tok.value);
