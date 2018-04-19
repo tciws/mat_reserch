@@ -16,7 +16,7 @@ int main(int argc, char *argv[]){
     fprintf(stderr, "USAGE：comp source-file-name\n");
     exit(1);
   }
-  if((outfile = fopen("a.asm","w")) == NULL){
+  if((outfile = fopen("ex11.asm","w")) == NULL){
     fprintf(stderr,"Object file creation failed.\n");
     exit(1);
   }
