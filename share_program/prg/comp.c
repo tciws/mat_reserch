@@ -95,7 +95,7 @@ while(1){
 */
   switch(tok.attr){
     case RWORD:
-        printf("%d\n",tok.attr);
+        printf("#%d\n",tok.attr);
         break;
     case SYMBOL:
         if(tok.value == SEMICOLON || tok.value == PERIOD){
