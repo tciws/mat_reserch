@@ -12,6 +12,8 @@ void statement(void);
 void rwo_func(void);
 void num_func(void);
 void sym_func(void);
+void ope_func(void);
+void ident(void);
 int push(int dt);
 int pop(void);
 //
@@ -19,6 +21,12 @@ int pop(void);
 //global
 //rx is register
 int rx[6];
+//tmp用変数
+int sym,num;
+//変数記号表
+//変数名格納用charポインタ
+//変数アドレス格納用int
+hensu ide[H];
 //
 void compiler(void){
   //printf("hentai");
@@ -64,49 +72,27 @@ void statement(void){
   for(int i = 0; i < 6 ; i++){
     rx[i] = 0;
   }
-while(1){
-  //printf("%d\n%d\n",tok.attr,tok.value);
-  /*if(tok.attr == RWORD){
-    if(tok.value == BEGIN){
-    }
-    if(tok.value == END){
-      printf("\n");
-    }
+  for(int i =0;i<H;i++){
+    ide[i].adr = 0;
   }
-  if(tok.attr == SYMBOL){
-    if(tok.value == SEMICOLON || tok.value == PERIOD){
-      printf("\n");
-    }
-    else{
-    printf("%c",tok.value);
-  }
-  }
-  if(tok.attr == NUMBER){
-    printf("%d",tok.value);
-  }
-  //SYMBOL
-  if(tok.attr == SYMBOL){
-    sym_func();
-  }
-  //NUMBER
-  if(tok.attr == NUMBER){
-    num_func();
-  }
-*/
-  switch(tok.attr){
-    case RWORD:
-        printf("#%d\n",tok.attr);
-        break;
-    case SYMBOL:
-        if(tok.value == SEMICOLON || tok.value == PERIOD){
-        }
-        else{
+  while(1){
+    switch(tok.attr){
+      case RWORD:
+        //printf("%d\n",tok.attr);
+          break;
+      case SYMBOL:
+        //if(tok.value == SEMICOLON || tok.value == PERIOD){
+        //}
+        //else{
           sym_func();
-        }
+        //}
         break;
     case NUMBER:
         num_func();
         break;
+    case IDENTIFIER:
+      ident();
+      break;
     default:
       printf("%d\n",tok.attr);
   }
@@ -120,14 +106,23 @@ while(1){
 }
 void rwo_func(void){
 }
+void ident(void){
+  
+}
 void sym_func(void){
-  int sym,num;
   //printf("hentai\n");
-  sym = tok.value;
-  getsym();
-  if(tok.attr == NUMBER){
-    num = tok.value;
+  //四則演算識別
+  if(tok.value == PLUS || tok.value == MINUS || tok.value == TIMES){
+    sym = tok.value;
+    getsym();
+    if(tok.attr == NUMBER){
+      num = tok.value;
+    }
+    ope_func();
   }
+  //fprintf(outfile,"muli  R0,%d\n",num);
+}
+void ope_func(void){
   switch (sym) {
     case PLUS:
     //足し算用
@@ -142,8 +137,8 @@ void sym_func(void){
       fprintf(outfile,"muli  R0,%d\n",num);
     break;
   }
-  //fprintf(outfile,"muli  R0,%d\n",num);
 }
 void num_func(void){
+  //数字代入
   fprintf(outfile,"loadi R0,%d \n",tok.value);
 }
