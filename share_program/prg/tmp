@@ -1,0 +1,5 @@
+loadi R0,10 
+store R0,2
+loadi R0,2 
+store R0,2
+muli  R0,0
