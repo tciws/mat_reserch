@@ -14,10 +14,10 @@ void num_func(void);
 void sym_func(void);
 void ope_func(void);
 void ident(void);
-void teigi(void);
 int push(int dt);
-int search(void);
 int pop(void);
+int search(void);
+void teigi(void);
 //
 //
 //global
@@ -26,6 +26,14 @@ int rx[6];
 //tmp用変数
 int sym,num;
 int add = 0;
+int typesel = -1;
+/*+++++++
+即値0
+レジスタ1
+アドレス2
+オフセット3
+ラベル4
+*/
 //変数記号表
 //変数名格納用charポインタ
 //変数アドレス格納用int
@@ -76,13 +84,14 @@ void statement(void){
     rx[i] = 0;
   }
   for(int i =0;i<H;i++){
+    strcpy(ide[i].ptr,"program");
     ide[i].adr = 0;
   }
   while(1){
-    printf("%d\n",tok.attr);
+    //printf("%d\n",tok.attr);
     switch(tok.attr){
       case RWORD:
-        printf("%d\n",tok.value);
+        //printf("%d\n",tok.value);
         rwo_func();
           break;
       case SYMBOL:
@@ -96,7 +105,7 @@ void statement(void){
         num_func();
         break;
     case IDENTIFIER:
-      printf("###%d\n",tok.attr);
+      //printf("###%d\n",tok.attr);
       ident();
       break;
     default:
@@ -114,42 +123,24 @@ void rwo_func(void){
   if(tok.value == VAR){
     teigi();
   }
-}
-void teigi(void){
-  getsym();
-  int i;
-  for(i = 0; i < H; i++){
-    if(ide[i].ptr == NULL){
-      add++;
-      ide[i].ptr=tok.charvalue;
-      ide[i].adr=add;
-      printf("%s,%d\n",ide[i].ptr,ide[i].adr);
-      break;
+  if(tok.value == WRITE){
+    int tmp = 0;
+semiwrite:
+    getsym();
+    tmp = search();
+    if(tmp != 0){
+    fprintf(outfile,"load R0,%d\n",tmp);
+    fprintf(outfile,"writed  R0\n");
+    fprintf(outfile, "loadi R0,10\n");
+    fprintf(outfile,"writec  R0\n");
+    }
+    getsym();
+    if(tok.value == COMMA){
+      goto semiwrite;
     }
   }
-  getsym();
-  if(tok.value == COMMA){
-    teigi();
-  }
 }
-int search(void){
-  int addrs = 0;
-  printf("add = %d\n",add);
-  int j;
-  for(j = 0; j < H; j++){
-    printf("j=%d\n",j);
-    if(ide[j].ptr == tok.charvalue){
-      printf("%s,%d,%d\n",ide[j].ptr,ide[j].adr,j);
-      addrs = ide[j].adr;
-      printf("addrs=%d\n",addrs);
-      return addrs;
-    }
-    if(j==add-1){
-      printf("error.\n");
-    }
-  }
-  return 0;
-}
+
 void ident(void){
   int tmp = 0;
   int tmp2 = 0;
@@ -163,7 +154,7 @@ void ident(void){
         case  IDENTIFIER:
           tmp2 = search();
           if(tmp2 != 0){
-            printf("tmp2 = %d\n",tmp2);
+            //printf("tmp2 = %d\n",tmp2);
             printf("load  R0,%d\n",tmp2);
             getsym();
             if(tok.attr == SYMBOL){
@@ -174,7 +165,16 @@ void ident(void){
         case  NUMBER:
           num_func();
           printf("tmp = %d\n",tmp);
+          getsym();
+          if(tok.value == SEMICOLON){
           fprintf(outfile,"store R0,%d\n",tmp);
+          }
+          else{
+            if(tok.attr == SYMBOL){
+              sym_func();
+              fprintf(outfile, "store R0,%d\n", tmp);
+            }
+          }
           break;
         default:
           printf("hentai\n");
@@ -186,29 +186,62 @@ void ident(void){
 void sym_func(void){
   //printf("hentai\n");
   //四則演算識別
+  int addrs = 0;
   if(tok.value == PLUS || tok.value == MINUS || tok.value == TIMES){
     sym = tok.value;
     getsym();
     if(tok.attr == NUMBER){
       num = tok.value;
+      typesel = 0;
+    }
+    if(tok.attr == IDENTIFIER){
+      addrs = search();
+      if(addrs!=0){
+        fprintf(outfile,"load  R1,%d\n",addrs);
+        typesel = 1;
+        num = 1;
+      }
     }
     ope_func();
   }
   //fprintf(outfile,"muli  R0,%d\n",num);
 }
 void ope_func(void){
-  switch (sym) {
-    case PLUS:
-    //足し算用
-      fprintf(outfile,"addi  R0,%d\n",num);
+  switch (typesel) {
+    case 0:
+    switch (sym) {
+      case PLUS:
+      //足し算用
+        fprintf(outfile,"addi  R0,%d\n",num);
+      break;
+      case MINUS:
+      //引き算用
+        fprintf(outfile,"subi  R0,%d\n",num);
+      break;
+      case TIMES:
+      //掛け算用
+        fprintf(outfile,"muli  R0,%d\n",num);
+      break;
+    }
     break;
-    case MINUS:
-    //引き算用
-      fprintf(outfile,"subi  R0,%d\n",num);
+    case 1:
+    switch (sym) {
+      case PLUS:
+      //足し算用
+        fprintf(outfile,"addr  R0,R%d\n",num);
+      break;
+      case MINUS:
+      //引き算用
+        fprintf(outfile,"subr  R0,R%d\n",num);
+      break;
+      case TIMES:
+      //掛け算用
+        fprintf(outfile,"mulr  R0,R%d\n",num);
+      break;
+    }
     break;
-    case TIMES:
-    //掛け算用
-      fprintf(outfile,"muli  R0,%d\n",num);
+    default:
+    printf("error\n");
     break;
   }
 }
