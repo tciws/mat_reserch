@@ -11,6 +11,6 @@ typedef struct {
   int data;
 } stack_e;
 typedef struct {
-  char *ptr;
+  char ptr[16];
   int adr;
 } hensu;
