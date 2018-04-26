@@ -18,6 +18,8 @@ int push(int dt);
 int pop(void);
 int search(void);
 void teigi(void);
+void condition(void);
+int lavel(void);
 //
 //
 //global
@@ -27,6 +29,7 @@ int rx[6];
 int sym,num;
 int add = 0;
 int typesel = -1;
+int lavel;
 /*+++++++
 即値0
 レジスタ1
