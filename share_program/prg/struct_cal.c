@@ -11,7 +11,7 @@ extern TOKEN tok;
 extern int sym,num;
 extern int add;
 extern int typesel;
-extern int lavel;
+extern int lv;
 //
 int push(int dt){
   if(spt >= STACK_MAX - 1){
@@ -76,11 +76,8 @@ void teigi(void){
   }
 }
 void condition(void){
-  switch(tok.value){
-    case 
-  }
 }
 int lavel(void){
-  lavel++;
-  return lavel;
+  lv++;
+  return lv;
 }

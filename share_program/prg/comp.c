@@ -29,7 +29,7 @@ int rx[6];
 int sym,num;
 int add = 0;
 int typesel = -1;
-int lavel;
+int lv;
 /*+++++++
 即値0
 レジスタ1
@@ -118,7 +118,7 @@ void statement(void){
     exit(1);
     }
   else{
-    getsym();
+    gsd;
   }
   }
 }
@@ -129,7 +129,7 @@ void rwo_func(void){
   if(tok.value == WRITE){
     int tmp = 0;
 semiwrite:
-    getsym();
+    gsd;
     tmp = search();
     if(tmp != 0){
     fprintf(outfile,"load R0,%d\n",tmp);
@@ -137,7 +137,7 @@ semiwrite:
     fprintf(outfile, "loadi R0,10\n");
     fprintf(outfile,"writec  R0\n");
     }
-    getsym();
+    gsd;
     if(tok.value == COMMA){
       goto semiwrite;
     }
@@ -150,16 +150,16 @@ void ident(void){
   tmp = search();
   if(tmp != 0){
     //変数が記号表中に存在したときの処理
-    getsym();
+    gsd;
     if(tok.value == BECOMES){
-      getsym();
+      gsd;
       switch(tok.attr){
         case  IDENTIFIER:
           tmp2 = search();
           if(tmp2 != 0){
             //printf("tmp2 = %d\n",tmp2);
             printf("load  R0,%d\n",tmp2);
-            getsym();
+            gsd;
             if(tok.attr == SYMBOL){
               sym_func();
             }
@@ -168,7 +168,7 @@ void ident(void){
         case  NUMBER:
           num_func();
           printf("tmp = %d\n",tmp);
-          getsym();
+          gsd;
           if(tok.value == SEMICOLON){
           fprintf(outfile,"store R0,%d\n",tmp);
           }
@@ -192,7 +192,7 @@ void sym_func(void){
   int addrs = 0;
   if(tok.value == PLUS || tok.value == MINUS || tok.value == TIMES){
     sym = tok.value;
-    getsym();
+    gsd;
     if(tok.attr == NUMBER){
       num = tok.value;
       typesel = 0;
