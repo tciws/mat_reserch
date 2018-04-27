@@ -4,7 +4,7 @@
 #include<getsym.h>
 #include"struc_inc.h"
 //
-stack_e stack[STACK_MAX];
+//stack_e stack[STACK_MAX];
 int spt = -1;
 extern hensu ide[H];
 extern TOKEN tok;
@@ -13,6 +13,7 @@ extern int add;
 extern int typesel;
 extern int lv;
 //
+/*
 int push(int dt){
   if(spt >= STACK_MAX - 1){
     return -1;
@@ -37,6 +38,7 @@ int pop(void){
   spt--;
   return dt;
 }
+*/
 int search(void){
   int addrs = 0;
   //printf("add = %d\n",add);
