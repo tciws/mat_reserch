@@ -24,6 +24,7 @@ int search(void);
 void teigi(void);
 int condition(void);
 int lavel(void);
+void init_addr(void);
 //
 //
 //global
@@ -48,6 +49,7 @@ hensu ide[H];
 //
 void compiler(void){
   //printf("hentai");
+  init_addr();
   init_getsym();
   getsym();
   if(tok.attr == RWORD && tok.value == PROGRAM){
@@ -81,11 +83,21 @@ void compiler(void){
       error("At the first, program declaration is required");
     }
   }
-
+//各種グローバル配列、構造体初期化用関数
+void init_addr(void){
+  for(int i = 0; i < 6 ; i++){
+    rx[i] = 0;
+  }
+  for(int i =0;i<H;i++){
+    strcpy(ide[i].ptr,"program");
+    ide[i].adr = 0;
+  }
+}
 void error(char *s){
   fprintf(stderr,"%s\n",s);
   exit(1);
 }
+//指導書中statement
 void statement(void){
   getsym();
   switch(tok.attr){
@@ -100,12 +112,14 @@ void statement(void){
         break;
   }
 }
+//指導書中ident
 void ident_func(void){
   getsym();
   if(tok.value == BECOMES){
     express();
   }
 }
+//指導書中RWORD
 void rwo_func(void){
   int cond_val;
   switch(tok.attr){
@@ -140,6 +154,7 @@ void rwo_func(void){
       break;
   }
 }
+//指導書中EXPRESSION
 void express(void){
   getsym();
   switch(tok.attr){
@@ -152,6 +167,7 @@ void express(void){
         break;
   }
 }
+//expressionから関数呼出しされる用の関数
 int exp_ident(void){
   int tmp_ad;
   tmp_ad=search();
