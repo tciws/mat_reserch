@@ -25,6 +25,8 @@ void teigi(void);
 int condition(void);
 int lavel(void);
 void init_addr(void);
+void if_func();
+void while_func();
 //
 //
 //global
@@ -34,7 +36,7 @@ int rx[6];
 int sym,num;
 int add = 0;
 int typesel = -1;
-int lavel;
+int lv = 0;
 /*+++++++
 即値0
 レジスタ1
@@ -99,59 +101,49 @@ void error(char *s){
 }
 //指導書中statement
 void statement(void){
-  getsym();
+  gsd;
   switch(tok.attr){
     case IDENTIFIER:
-      ident_func();
+      gsd;
+      if(tok.value==BECOMES){
+        gsd;
+        express();
+      }
         break;
     case RWORD:
-      rwo_func();
+      switch(tok.value){
+        case BEGIN:
+          lv++;
+      semi:
+          statement();
+          if(tok.value == SEMICOLON){
+            goto semi;
+          }
+          gsd;
+          if(tok.value == END){
+            lv--;
+          }
+        break;
+        case VAR:
+        //変数定義
+          teigi();
+        break;
+        case IF:
+        //条件式分岐用
+          if_func();
+        break;
+        case WHILE:
+        //繰り返し文分岐用
+          while_func();
+        break;
+        case WRITE:
+        //書きかけ
+        break;
+      }
         break;
     default:
       printf("error\n");
         break;
-  }
-}
-//指導書中ident
-void ident_func(void){
-  getsym();
-  if(tok.value == BECOMES){
-    express();
-  }
-}
-//指導書中RWORD
-void rwo_func(void){
-  int cond_val;
-  switch(tok.attr){
-    case BEGIN:
-      statement();
-      getsym();
-      if(tok.value == SEMICOLON){
-        statement();
-      }
-      else{
-        //end
-      }
-      break;
-    case IF:
-    cond_val=condition();
-    if(cond_val == 1){
-      //then
-      getsym();
-      statement();
-    }
-    else{
-      //else
-      getsym();
-      statement();
-    }
-      break;
-    case WHILE:
-      break;
-    case WRITE:
-      break;
-    default:
-      break;
   }
 }
 //指導書中EXPRESSION
@@ -165,6 +157,30 @@ void express(void){
     default:
         printf("error\n");
         break;
+  }
+}
+//条件分処理用関数
+void if_func(void){
+  gsd;
+  condition();
+  gsd;
+  //THEN
+  gsd;
+  if(tok.value == THEN){
+    statement();
+    gsd;
+    if(tok.value == ELSE){
+      statement();
+    }
+  }
+}
+//繰り返し文書利用関数
+void while_func(void){
+  gsd;
+  condition();
+  gsd;
+  if(tok.value == DO){
+    statement();
   }
 }
 //expressionから関数呼出しされる用の関数
