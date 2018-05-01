@@ -5,6 +5,9 @@
 #include"struc_inc.h"
 //
 //stack_e stack[STACK_MAX];
+extern TOKEN tok;
+extern FILE *infile;
+extern FILE *outfile;
 int spt = -1;
 extern hensu ide[H];
 extern TOKEN tok;
@@ -12,6 +15,7 @@ extern int sym,num;
 extern int add;
 extern int typesel;
 extern int lv;
+extern int sig[3];
 //
 /*
 int push(int dt){
@@ -77,9 +81,23 @@ void teigi(void){
     teigi();
   }
 }
-void condition(void){
-}
 int lavel(void){
   lv++;
   return lv;
+}
+int out_file_func(int signal[]){
+  switch(signal[0]){
+    case 0:
+    fprintf(outfile,"addi R%d,%d",signal[1],signal[2]);
+    break;
+    case 1:
+    fprintf(outfile,"subi R%d,%d",signal[1],signal[2]);
+    break;
+    case 2:
+    fprintf(outfile,"muli R%d,%d",signal[1],signal[2]);
+    break;
+  }
+  for(int i =0;i<4;i++){
+    signal[i] = 0;
+  }
 }
