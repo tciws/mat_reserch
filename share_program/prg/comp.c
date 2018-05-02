@@ -40,6 +40,7 @@ int sym,num;
 int add = 0;
 int typesel = -1;
 int lv = 0;
+int st = 0;
 /*+++++++
 即値0
 レジスタ1
@@ -107,8 +108,10 @@ void error(char *s){
 }
 //指導書中statement
 void statement(void){
+  int temp = 0;
   gsd(1);
   switch(tok.attr){
+    //指導書構文図中ident
     case IDENTIFIER:
       gsd(2);
       if(tok.value==BECOMES){
@@ -116,20 +119,31 @@ void statement(void){
         express();
       }
         break;
+    //指導書公文図中begin,if,whileなど
     case RWORD:
       switch(tok.value){
         case BEGIN:
           lv++;
           semi:
           statement();
-          gsd(17);
+          //gsd(17);
           if(tok.value == SEMICOLON){
-            printf("error6\n");
             goto semi;
           }
           gsd(4);
           if(tok.value == END){
             lv--;
+            gsd(20);
+          if(tok.value == PERIOD){
+            return;
+          }
+
+          if(tok.value == SEMICOLON){
+            goto semi;
+          }
+          }
+          if(tok.value == PERIOD){
+            return;
           }
         break;
         case VAR:
@@ -145,10 +159,20 @@ void statement(void){
           while_func();
         break;
         case WRITE:
-        //書きかけ
+        com:
+        gsd(21);
+          //statement();
+          //
+          temp=exp_ident();
+          //deb(1);
+          gsd(22);
+          if(tok.attr == SYMBOL && tok.value == COMMA){
+            goto com;
+          }
         break;
         }
         break;
+        /*
         case NUMBER:
         //変数か数字の分岐
         switch(tok.attr){
@@ -194,11 +218,13 @@ void statement(void){
     default:
       printf("error3\n");
         break;
+        */
   }
+  return;
 }
 //指導書中EXPRESSION
 void express(void){
-  gsd(7);
+  //gsd(7);
   //変数か数字の分岐
   switch(tok.attr){
     case NUMBER:
@@ -212,6 +238,11 @@ void express(void){
         break;
   }
   gsd(8);
+  if(tok.value == SEMICOLON){
+    //セミコロンを読んだらリターン
+    //statement();
+    return;
+  }
   switch (tok.value) {
     case PLUS:
     break;
@@ -222,9 +253,10 @@ void express(void){
     case DIV:
     break;
     default:
-    return;
+    printf("error7\n");
+    break;
   }
-  gsd(9);
+  gsd(7);
   switch(tok.attr){
     case NUMBER:
       sig[2]=exp_num();
@@ -238,7 +270,13 @@ void express(void){
         printf("error5\n");
         break;
   }
+  gsd(9);
   out_file_func(sig);
+  if(tok.value == SEMICOLON){
+    //セミコロンを読んだらリターン
+    return;
+    //statement();
+  }
 }
 //条件分処理用関数
 void if_func(void){

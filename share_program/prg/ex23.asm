@@ -1,0 +1,11 @@
+loadi R0,0 
+store R0,1
+loadi R0,0 
+store R0,2
+loadi R0,10 
+addi  R0,1
+addi  R0,1
+load R0,2
+writed  R0
+loadi R0,10
+writec  R0

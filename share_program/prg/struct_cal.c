@@ -62,7 +62,7 @@ int search(void){
   return 0;
 }
 void teigi(void){
-  getsym();
+  gsd(18);
   int i;
   for(i = 0; i < H; i++){
     //printf("####%s,%d\n",ide[i].ptr,ide[i].adr);
@@ -76,9 +76,12 @@ void teigi(void){
       break;
     }
   }
-  getsym();
+  gsd(19);
   if(tok.value == COMMA){
     teigi();
+  }
+  else{
+    statement();
   }
 }
 int lavel(void){
