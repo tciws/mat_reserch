@@ -137,6 +137,7 @@ void statement(void){
           if(tok.value == PERIOD){
             return;
           }
+
           if(tok.value == SEMICOLON){
             goto semi;
           }
@@ -155,7 +156,6 @@ void statement(void){
         break;
         case WHILE:
         //繰り返し文分岐用
-        //変態紳士
           while_func();
         break;
         case WRITE:
