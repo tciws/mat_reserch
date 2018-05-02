@@ -57,14 +57,15 @@ void compiler(void){
   //printf("hentai");
   init_addr();
   init_getsym();
-  getsym();
+  deba;
+  gsd(1);
   if(tok.attr == RWORD && tok.value == PROGRAM){
-    getsym();
+    gsd(2);
     if(tok.attr == IDENTIFIER){
-      getsym();
-      statement();
+      gsd(3);
+      //statement();
       if(tok.attr == SYMBOL && tok.value == SEMICOLON){
-        getsym();
+        gsd(4);
         statement();
         if(tok.attr == SYMBOL && tok.value == PERIOD){
           fprintf(stderr,"Parsing Completed.Noerrors found.\n");
@@ -109,13 +110,13 @@ void error(char *s){
 //指導書中statement
 void statement(void){
   int temp = 0;
-  gsd(1);
+  //gsd(2);
   switch(tok.attr){
     //指導書構文図中ident
     case IDENTIFIER:
-      gsd(2);
+      gsd(10);
       if(tok.value==BECOMES){
-        gsd(3);
+        gsd(11);
         express();
       }
         break;
@@ -125,29 +126,39 @@ void statement(void){
         case BEGIN:
           lv++;
           semi:
+          gsd(12);
           statement();
           //gsd(17);
           if(tok.value == SEMICOLON){
             goto semi;
           }
-          gsd(4);
           if(tok.value == END){
             lv--;
-            gsd(20);
+          }
+          gsd(13);
+          if(tok.value == END){
+            lv--;
+            gsd(14);
+            /*
           if(tok.value == PERIOD){
             return;
           }
+          */
           if(tok.value == SEMICOLON){
             goto semi;
           }
           }
+          /*
           if(tok.value == PERIOD){
             return;
           }
+          */
         break;
         case VAR:
         //変数定義
           teigi();
+          gsd(15);
+          statement();
         break;
         case IF:
         //条件式分岐用
@@ -160,12 +171,12 @@ void statement(void){
         break;
         case WRITE:
         com:
-        gsd(21);
+        gsd(16);
           //statement();
           //
           temp=exp_ident();
           //deb(1);
-          gsd(22);
+          gsd(17);
           if(tok.attr == SYMBOL && tok.value == COMMA){
             goto com;
           }
@@ -229,6 +240,7 @@ void express(void){
   switch(tok.attr){
     case NUMBER:
       sig[1]=exp_num();
+      deb(1);
         break;
     case IDENTIFIER:
       sig[1]=exp_ident();
@@ -237,7 +249,7 @@ void express(void){
         printf("error4\n");
         break;
   }
-  gsd(8);
+  gsd(20);
   if(tok.value == SEMICOLON){
     //セミコロンを読んだらリターン
     //statement();
@@ -256,7 +268,7 @@ void express(void){
     printf("error7\n");
     break;
   }
-  gsd(7);
+  gsd(21);
   switch(tok.attr){
     case NUMBER:
       sig[2]=exp_num();
@@ -270,7 +282,7 @@ void express(void){
         printf("error5\n");
         break;
   }
-  gsd(9);
+  gsd(22);
   out_file_func(sig);
   if(tok.value == SEMICOLON){
     //セミコロンを読んだらリターン
@@ -280,25 +292,28 @@ void express(void){
 }
 //条件分処理用関数
 void if_func(void){
-  gsd(10);
+  gsd(30);
   condition();
-  gsd(11);
+  gsd(31);
   //THEN
-  gsd(12);
+  gsd(32);
   if(tok.value == THEN){
+    gsd(33);
     statement();
-    gsd(13);
+    gsd(34);
     if(tok.value == ELSE){
+      gsd(35);
       statement();
     }
   }
 }
 //繰り返し文書利用関数
 void while_func(void){
-  gsd(14);
+  gsd(40);
   condition();
-  gsd(15);
+  gsd(41);
   if(tok.value == DO){
+    gsd(42);
     statement();
   }
 }
@@ -314,7 +329,8 @@ int exp_num(void){
 }
 int condition(void){
   express();
-  gsd(16);
+  gsd(50);
   //比較演算子のスイッチ文を書く
+  gsd(51);
   express();
 }

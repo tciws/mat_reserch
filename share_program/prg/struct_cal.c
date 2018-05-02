@@ -62,7 +62,7 @@ int search(void){
   return 0;
 }
 void teigi(void){
-  gsd(18);
+  gsd(-1);
   int i;
   for(i = 0; i < H; i++){
     //printf("####%s,%d\n",ide[i].ptr,ide[i].adr);
@@ -76,7 +76,7 @@ void teigi(void){
       break;
     }
   }
-  gsd(19);
+  gsd(-2);
   if(tok.value == COMMA){
     teigi();
   }
