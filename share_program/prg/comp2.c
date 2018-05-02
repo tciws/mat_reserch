@@ -24,7 +24,7 @@ int search(void);
 void teigi(void);
 int condition(void);
 int lavel(void);
-void init_addr(void);
+void init_func(void);
 //
 //
 //global
@@ -49,7 +49,6 @@ hensu ide[H];
 //
 void compiler(void){
   //printf("hentai");
-  init_addr();
   init_getsym();
   getsym();
   if(tok.attr == RWORD && tok.value == PROGRAM){
@@ -83,8 +82,12 @@ void compiler(void){
       error("At the first, program declaration is required");
     }
   }
-//各種グローバル配列、構造体初期化用関数
-void init_addr(void){
+
+void error(char *s){
+  fprintf(stderr,"%s\n",s);
+  exit(1);
+}
+void init_func(void){
   for(int i = 0; i < 6 ; i++){
     rx[i] = 0;
   }
@@ -93,11 +96,6 @@ void init_addr(void){
     ide[i].adr = 0;
   }
 }
-void error(char *s){
-  fprintf(stderr,"%s\n",s);
-  exit(1);
-}
-//指導書中statement
 void statement(void){
   getsym();
   switch(tok.attr){
@@ -112,14 +110,54 @@ void statement(void){
         break;
   }
 }
-//指導書中ident
 void ident_func(void){
-  getsym();
+  //getsym();
+  /*
   if(tok.value == BECOMES){
     express();
   }
+  */
+  int tmp = 0;
+  int tmp2 = 0;
+  tmp = search();
+  if(tmp != 0){
+    //変数が記号表中に存在したときの処理
+    gsd;
+    if(tok.value == BECOMES){
+      gsd;
+      switch(tok.attr){
+        case  IDENTIFIER:
+          tmp2 = search();
+          if(tmp2 != 0){
+            //printf("tmp2 = %d\n",tmp2);
+            printf("load  R0,%d\n",tmp2);
+            gsd;
+            if(tok.attr == SYMBOL){
+              sym_func();
+            }
+          }
+          break;
+        case  NUMBER:
+          num_func();
+          printf("tmp = %d\n",tmp);
+          gsd;
+          if(tok.value == SEMICOLON){
+          fprintf(outfile,"store R0,%d\n",tmp);
+          }
+          else{
+            if(tok.attr == SYMBOL){
+              sym_func();
+              fprintf(outfile, "store R0,%d\n", tmp);
+            }
+          }
+          break;
+        default:
+          printf("hentai\n");
+          break;
+      }
+    }
+  }
 }
-//指導書中RWORD
 void rwo_func(void){
   int cond_val;
   switch(tok.attr){
@@ -154,29 +192,43 @@ void rwo_func(void){
       break;
   }
 }
-//指導書中EXPRESSION
 void express(void){
   getsym();
   switch(tok.attr){
     case NUMBER:
+      exp_num();
         break;
     case IDENTIFIER:
+      exp_ident();
         break;
     default:
         printf("error\n");
         break;
   }
 }
-//expressionから関数呼出しされる用の関数
 int exp_ident(void){
   int tmp_ad;
   tmp_ad=search();
   return tmp_ad;
 }
 int exp_num(void){
-
   return tok.value;
 }
 int condition(void){
-
+  gsd;
+  express();
+  switch(tok.value){
+    case EQL:
+      break;
+    case NOTEQL:
+      break;
+    case GRTRTHAN:
+      break;
+    case LESSTHAN:
+      break;
+    default:
+      break;
+  }
+  gsd;
+  express();
 }
