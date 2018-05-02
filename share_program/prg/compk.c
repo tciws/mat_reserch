@@ -9,22 +9,17 @@ extern FILE *outfile;
 //
 void error(char *s);
 void statement(void);
-void ident_func(void);
 void rwo_func(void);
-void express(void);
-int exp_ident(void);
-int exp_num(void);
-//void num_func(void);
-//void sym_func(void);
-//void ope_func(void);
-//void ident(void);
-//int push(int dt);
-//int pop(void);
+void num_func(void);
+void sym_func(void);
+void ope_func(void);
+void ident(void);
+int push(int dt);
+int pop(void);
 int search(void);
 void teigi(void);
-int condition(void);
+void condition(void);
 int lavel(void);
-void init_func(void);
 //
 //
 //global
@@ -34,7 +29,7 @@ int rx[6];
 int sym,num;
 int add = 0;
 int typesel = -1;
-int lavel;
+int lv;
 /*+++++++
 即値0
 レジスタ1
@@ -47,6 +42,7 @@ int lavel;
 //変数アドレス格納用int
 hensu ide[H];
 //
+
 void compiler(void){
   //printf("hentai");
   init_getsym();
@@ -87,7 +83,7 @@ void error(char *s){
   fprintf(stderr,"%s\n",s);
   exit(1);
 }
-void init_func(void){
+void statement(void){
   for(int i = 0; i < 6 ; i++){
     rx[i] = 0;
   }
@@ -95,28 +91,61 @@ void init_func(void){
     strcpy(ide[i].ptr,"program");
     ide[i].adr = 0;
   }
-}
-void statement(void){
-  getsym();
-  switch(tok.attr){
+  while(1){
+    //printf("%d\n",tok.attr);
+    switch(tok.attr){
+      case RWORD:
+        //printf("%d\n",tok.value);
+        rwo_func();
+          break;
+      case SYMBOL:
+        //if(tok.value == SEMICOLON || tok.value == PERIOD){
+        //}
+        //else{
+          sym_func();
+        //}
+        break;
+    case NUMBER:
+        num_func();
+        break;
     case IDENTIFIER:
-      ident_func();
-        break;
-    case RWORD:
-      rwo_func();
-        break;
+      //printf("###%d\n",tok.attr);
+      ident();
+      break;
     default:
-      printf("error\n");
-        break;
+      printf("#%d\n",tok.attr);
+  }
+  if(tok.value == PERIOD){
+    exit(1);
+    }
+  else{
+    gsd;
+  }
   }
 }
-void ident_func(void){
-  //getsym();
-  /*
-  if(tok.value == BECOMES){
-    express();
+void rwo_func(void){
+  if(tok.value == VAR){
+    teigi();
   }
-  */
+  if(tok.value == WRITE){
+    int tmp = 0;
+semiwrite:
+    gsd;
+    tmp = search();
+    if(tmp != 0){
+    fprintf(outfile,"load R0,%d\n",tmp);
+    fprintf(outfile,"writed  R0\n");
+    fprintf(outfile, "loadi R0,10\n");
+    fprintf(outfile,"writec  R0\n");
+    }
+    gsd;
+    if(tok.value == COMMA){
+      goto semiwrite;
+    }
+  }
+}
+
+void ident(void){
   int tmp = 0;
   int tmp2 = 0;
   tmp = search();
@@ -158,77 +187,69 @@ void ident_func(void){
     }
   }
 }
-void rwo_func(void){
-  int cond_val;
-  switch(tok.attr){
-    case BEGIN:
-      statement();
-      getsym();
-      if(tok.value == SEMICOLON){
-        statement();
-      }
-      else{
-        //end
-      }
-      break;
-    case IF:
-    cond_val=condition();
-    if(cond_val == 1){
-      //then
-      getsym();
-      statement();
+void sym_func(void){
+  //printf("hentai\n");
+  //四則演算識別
+  int addrs = 0;
+  if(tok.value == PLUS || tok.value == MINUS || tok.value == TIMES){
+    sym = tok.value;
+    gsd;
+    if(tok.attr == NUMBER){
+      num = tok.value;
+      typesel = 0;
     }
-    else{
-      //else
-      getsym();
-      statement();
+    if(tok.attr == IDENTIFIER){
+      addrs = search();
+      if(addrs!=0){
+        fprintf(outfile,"load  R1,%d\n",addrs);
+        typesel = 1;
+        num = 1;
+      }
     }
+    ope_func();
+  }
+  //fprintf(outfile,"muli  R0,%d\n",num);
+}
+void ope_func(void){
+  switch (typesel) {
+    case 0:
+    switch (sym) {
+      case PLUS:
+      //足し算用
+        fprintf(outfile,"addi  R0,%d\n",num);
       break;
-    case WHILE:
+      case MINUS:
+      //引き算用
+        fprintf(outfile,"subi  R0,%d\n",num);
       break;
-    case WRITE:
+      case TIMES:
+      //掛け算用
+        fprintf(outfile,"muli  R0,%d\n",num);
       break;
+    }
+    break;
+    case 1:
+    switch (sym) {
+      case PLUS:
+      //足し算用
+        fprintf(outfile,"addr  R0,R%d\n",num);
+      break;
+      case MINUS:
+      //引き算用
+        fprintf(outfile,"subr  R0,R%d\n",num);
+      break;
+      case TIMES:
+      //掛け算用
+        fprintf(outfile,"mulr  R0,R%d\n",num);
+      break;
+    }
+    break;
     default:
-      break;
+    printf("error\n");
+    break;
   }
 }
-void express(void){
-  getsym();
-  switch(tok.attr){
-    case NUMBER:
-      exp_num();
-        break;
-    case IDENTIFIER:
-      exp_ident();
-        break;
-    default:
-        printf("error\n");
-        break;
-  }
-}
-int exp_ident(void){
-  int tmp_ad;
-  tmp_ad=search();
-  return tmp_ad;
-}
-int exp_num(void){
-  return tok.value;
-}
-int condition(void){
-  gsd;
-  express();
-  switch(tok.value){
-    case EQL:
-      break;
-    case NOTEQL:
-      break;
-    case GRTRTHAN:
-      break;
-    case LESSTHAN:
-      break;
-    default:
-      break;
-  }
-  gsd;
-  express();
+void num_func(void){
+  //数字代入
+  fprintf(outfile,"loadi R0,%d \n",tok.value);
 }

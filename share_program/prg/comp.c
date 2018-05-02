@@ -9,27 +9,37 @@ extern FILE *outfile;
 //
 void error(char *s);
 void statement(void);
+void ident_func(void);
 void rwo_func(void);
-void num_func(void);
-void sym_func(void);
-void ope_func(void);
-void ident(void);
-int push(int dt);
-int pop(void);
+void express(void);
+int exp_ident(void);
+int exp_num(void);
+//void num_func(void);
+//void sym_func(void);
+//void ope_func(void);
+//void ident(void);
+//int push(int dt);
+//int pop(void);
 int search(void);
 void teigi(void);
-void condition(void);
+int condition(void);
 int lavel(void);
+void init_addr(void);
+void if_func(void);
+void while_func(void);
+int out_file_func(int signal[]);
 //
 //
 //global
 //rx is register
 int rx[6];
+int sig[3];
 //tmp用変数
+int osin;
 int sym,num;
 int add = 0;
 int typesel = -1;
-int lv;
+int lv = 0;
 /*+++++++
 即値0
 レジスタ1
@@ -44,6 +54,7 @@ hensu ide[H];
 //
 void compiler(void){
   //printf("hentai");
+  init_addr();
   init_getsym();
   getsym();
   if(tok.attr == RWORD && tok.value == PROGRAM){
@@ -77,12 +88,8 @@ void compiler(void){
       error("At the first, program declaration is required");
     }
   }
-
-void error(char *s){
-  fprintf(stderr,"%s\n",s);
-  exit(1);
-}
-void statement(void){
+//各種グローバル配列、構造体初期化用関数
+void init_addr(void){
   for(int i = 0; i < 6 ; i++){
     rx[i] = 0;
   }
@@ -90,165 +97,186 @@ void statement(void){
     strcpy(ide[i].ptr,"program");
     ide[i].adr = 0;
   }
-  while(1){
-    //printf("%d\n",tok.attr);
-    switch(tok.attr){
-      case RWORD:
-        //printf("%d\n",tok.value);
-        rwo_func();
-          break;
-      case SYMBOL:
-        //if(tok.value == SEMICOLON || tok.value == PERIOD){
-        //}
-        //else{
-          sym_func();
-        //}
+  for(int i =0;i<4;i++){
+    sig[i] = 0;
+  }
+}
+void error(char *s){
+  fprintf(stderr,"%s\n",s);
+  exit(1);
+}
+//指導書中statement
+void statement(void){
+  gsd(1);
+  switch(tok.attr){
+    case IDENTIFIER:
+      gsd(2);
+      if(tok.value==BECOMES){
+        gsd(3);
+        express();
+      }
         break;
+    case RWORD:
+      switch(tok.value){
+        case BEGIN:
+          lv++;
+          semi:
+          statement();
+          gsd(17);
+          if(tok.value == SEMICOLON){
+            printf("error6\n");
+            goto semi;
+          }
+          gsd(4);
+          if(tok.value == END){
+            lv--;
+          }
+        break;
+        case VAR:
+        //変数定義
+          teigi();
+        break;
+        case IF:
+        //条件式分岐用
+          if_func();
+        break;
+        case WHILE:
+        //繰り返し文分岐用
+          while_func();
+        break;
+        case WRITE:
+        //書きかけ
+        break;
+        }
+        break;
+        case NUMBER:
+        //変数か数字の分岐
+        switch(tok.attr){
+          case NUMBER:
+            sig[1]=exp_num();
+              break;
+          case IDENTIFIER:
+            sig[1]=exp_ident();
+              break;
+          default:
+              printf("error1\n");
+              break;
+        }
+        gsd(5);
+        switch (tok.value) {
+          case PLUS:
+          break;
+          case MINUS:
+          break;
+          case TIMES:
+          break;
+          case DIV:
+          break;
+          default:
+          return;
+        }
+        gsd(6);
+        switch(tok.attr){
+          case NUMBER:
+            sig[2]=exp_num();
+              break;
+          case IDENTIFIER:
+            sig[2]=exp_ident();
+            //レジスタ同士の演算の場合
+            sig[0] = sig[0]+5;
+              break;
+          default:
+              printf("error2\n");
+              break;
+        }
+        out_file_func(sig);
+        break;
+    default:
+      printf("error3\n");
+        break;
+  }
+}
+//指導書中EXPRESSION
+void express(void){
+  gsd(7);
+  //変数か数字の分岐
+  switch(tok.attr){
     case NUMBER:
-        num_func();
+      sig[1]=exp_num();
         break;
     case IDENTIFIER:
-      //printf("###%d\n",tok.attr);
-      ident();
-      break;
+      sig[1]=exp_ident();
+        break;
     default:
-      printf("#%d\n",tok.attr);
+        printf("error4\n");
+        break;
   }
-  if(tok.value == PERIOD){
-    exit(1);
+  gsd(8);
+  switch (tok.value) {
+    case PLUS:
+    break;
+    case MINUS:
+    break;
+    case TIMES:
+    break;
+    case DIV:
+    break;
+    default:
+    return;
+  }
+  gsd(9);
+  switch(tok.attr){
+    case NUMBER:
+      sig[2]=exp_num();
+        break;
+    case IDENTIFIER:
+      sig[2]=exp_ident();
+      //レジスタ同士の演算の場合
+      sig[0] = sig[0]+5;
+        break;
+    default:
+        printf("error5\n");
+        break;
+  }
+  out_file_func(sig);
+}
+//条件分処理用関数
+void if_func(void){
+  gsd(10);
+  condition();
+  gsd(11);
+  //THEN
+  gsd(12);
+  if(tok.value == THEN){
+    statement();
+    gsd(13);
+    if(tok.value == ELSE){
+      statement();
     }
-  else{
-    gsd;
-  }
   }
 }
-void rwo_func(void){
-  if(tok.value == VAR){
-    teigi();
-  }
-  if(tok.value == WRITE){
-    int tmp = 0;
-semiwrite:
-    gsd;
-    tmp = search();
-    if(tmp != 0){
-    fprintf(outfile,"load R0,%d\n",tmp);
-    fprintf(outfile,"writed  R0\n");
-    fprintf(outfile, "loadi R0,10\n");
-    fprintf(outfile,"writec  R0\n");
-    }
-    gsd;
-    if(tok.value == COMMA){
-      goto semiwrite;
-    }
+//繰り返し文書利用関数
+void while_func(void){
+  gsd(14);
+  condition();
+  gsd(15);
+  if(tok.value == DO){
+    statement();
   }
 }
+//expressionから関数呼出しされる用の関数
+int exp_ident(void){
+  int tmp_ad;
+  tmp_ad=search();
+  return tmp_ad;
+}
+int exp_num(void){
 
-void ident(void){
-  int tmp = 0;
-  int tmp2 = 0;
-  tmp = search();
-  if(tmp != 0){
-    //変数が記号表中に存在したときの処理
-    gsd;
-    if(tok.value == BECOMES){
-      gsd;
-      switch(tok.attr){
-        case  IDENTIFIER:
-          tmp2 = search();
-          if(tmp2 != 0){
-            //printf("tmp2 = %d\n",tmp2);
-            printf("load  R0,%d\n",tmp2);
-            gsd;
-            if(tok.attr == SYMBOL){
-              sym_func();
-            }
-          }
-          break;
-        case  NUMBER:
-          num_func();
-          printf("tmp = %d\n",tmp);
-          gsd;
-          if(tok.value == SEMICOLON){
-          fprintf(outfile,"store R0,%d\n",tmp);
-          }
-          else{
-            if(tok.attr == SYMBOL){
-              sym_func();
-              fprintf(outfile, "store R0,%d\n", tmp);
-            }
-          }
-          break;
-        default:
-          printf("hentai\n");
-          break;
-      }
-    }
-  }
+  return tok.value;
 }
-void sym_func(void){
-  //printf("hentai\n");
-  //四則演算識別
-  int addrs = 0;
-  if(tok.value == PLUS || tok.value == MINUS || tok.value == TIMES){
-    sym = tok.value;
-    gsd;
-    if(tok.attr == NUMBER){
-      num = tok.value;
-      typesel = 0;
-    }
-    if(tok.attr == IDENTIFIER){
-      addrs = search();
-      if(addrs!=0){
-        fprintf(outfile,"load  R1,%d\n",addrs);
-        typesel = 1;
-        num = 1;
-      }
-    }
-    ope_func();
-  }
-  //fprintf(outfile,"muli  R0,%d\n",num);
-}
-void ope_func(void){
-  switch (typesel) {
-    case 0:
-    switch (sym) {
-      case PLUS:
-      //足し算用
-        fprintf(outfile,"addi  R0,%d\n",num);
-      break;
-      case MINUS:
-      //引き算用
-        fprintf(outfile,"subi  R0,%d\n",num);
-      break;
-      case TIMES:
-      //掛け算用
-        fprintf(outfile,"muli  R0,%d\n",num);
-      break;
-    }
-    break;
-    case 1:
-    switch (sym) {
-      case PLUS:
-      //足し算用
-        fprintf(outfile,"addr  R0,R%d\n",num);
-      break;
-      case MINUS:
-      //引き算用
-        fprintf(outfile,"subr  R0,R%d\n",num);
-      break;
-      case TIMES:
-      //掛け算用
-        fprintf(outfile,"mulr  R0,R%d\n",num);
-      break;
-    }
-    break;
-    default:
-    printf("error\n");
-    break;
-  }
-}
-void num_func(void){
-  //数字代入
-  fprintf(outfile,"loadi R0,%d \n",tok.value);
+int condition(void){
+  express();
+  gsd(16);
+  //比較演算子のスイッチ文を書く
+  express();
 }
