@@ -11,7 +11,7 @@ void error(char *s);
 void statement(void);
 void ident_func(void);
 void rwo_func(void);
-void express(void);
+void express(int t);
 int exp_ident(void);
 int exp_num(void);
 //void num_func(void);
@@ -28,12 +28,13 @@ void init_addr(void);
 void if_func(void);
 void while_func(void);
 int out_file_func(int signal[]);
+void init_sig(void);
 //
 //
 //global
 //rx is register
 int rx[6];
-int sig[3];
+int sig[5];
 //tmp用変数
 int osin;
 int sym,num;
@@ -92,14 +93,17 @@ void compiler(void){
   }
 //各種グローバル配列、構造体初期化用関数
 void init_addr(void){
+  printf("Initialization Resister array...\n");
   for(int i = 0; i < 6 ; i++){
     rx[i] = 0;
   }
+  printf("Initialization variable array...\n");
   for(int i =0;i<H;i++){
     strcpy(ide[i].ptr,"program");
     ide[i].adr = 0;
   }
-  for(int i =0;i<4;i++){
+  printf("Initialization signal array...\n");
+  for(int i =0;i<5;i++){
     sig[i] = 0;
   }
 }
@@ -114,10 +118,13 @@ void statement(void){
   switch(tok.attr){
     //指導書構文図中ident
     case IDENTIFIER:
+    add=exp_ident();
+    printf("address = %d\n",add);
+    //BECCOME出す用getsym
       gsd(10);
       if(tok.value==BECOMES){
         gsd(11);
-        express();
+        express(0);
       }
         break;
     //指導書公文図中begin,if,whileなど
@@ -170,11 +177,23 @@ void statement(void){
           while_func();
         break;
         case WRITE:
+        init_sig();
         com:
         gsd(16);
+        sig[3] = exp_ident();
+        sig[0]=1;
+        sig[1]=0;
+        sig[4]=0;
+        OFF;
+        sig[0]=9;
+        sig[1]=0;
+        sig[4]=1;
+        OFF;
+        sig[4]=3;
+        OFF;
           //statement();
           //
-          temp=exp_ident();
+          //temp=exp_ident();
           //deb(1);
           gsd(17);
           if(tok.attr == SYMBOL && tok.value == COMMA){
@@ -224,7 +243,7 @@ void statement(void){
               printf("error2\n");
               break;
         }
-        out_file_func(sig);
+        OFF;
         break;
     default:
       printf("error3\n");
@@ -234,84 +253,128 @@ void statement(void){
   return;
 }
 //指導書中EXPRESSION
-void express(void){
+void express(int t){
   //gsd(7);
   //変数か数字の分岐
+  int temp;
   switch(tok.attr){
     case NUMBER:
-      sig[1]=exp_num();
+      sig[3]=exp_num();
+      sig[4]=3;
+      sig[0]=1;
+      sig[1]=0;
       deb(1);
+      OFF;
         break;
     case IDENTIFIER:
-      sig[1]=exp_ident();
+      sig[3]=exp_ident();
+      sig[4]=0;
+      sig[1]=0;
+      sig[0]=1;
+      deb(2);
+      OFF;
         break;
     default:
         printf("error4\n");
         break;
   }
   gsd(20);
-  if(tok.value == SEMICOLON){
+  /*if(tok.value == SEMICOLON||tok.value==THEN){
     //セミコロンを読んだらリターン
     //statement();
     return;
   }
+  */
   switch (tok.value) {
     case PLUS:
+    sig[0]= 3;
     break;
     case MINUS:
+    sig[0]= 4;
     break;
     case TIMES:
+    sig[0]= 5;
     break;
     case DIV:
+    sig[0]= 6;
     break;
     default:
     printf("error7\n");
+    sig[0]=2;
+    sig[4]=0;
+    sig[3]=add;
+    OFF;
+    return;
     break;
   }
   gsd(21);
   switch(tok.attr){
     case NUMBER:
-      sig[2]=exp_num();
+      sig[3]=exp_num();
+      if(t== 0){
+      sig[1]=0;
+    }
+      sig[4]=3;
+      OFF;
         break;
     case IDENTIFIER:
-      sig[2]=exp_ident();
-      //レジスタ同士の演算の場合
-      sig[0] = sig[0]+5;
+      sig[3]=exp_ident();
+      temp = sig[0];
+      sig[0] = 1;
+      sig[1] = 1;
+      sig[4] = 0;
+      OFF;
+      sig[0] = temp;
+      sig[1] = 0;
+      sig[2] = 1;
+      sig[4] = 2;
+      OFF;
         break;
     default:
         printf("error5\n");
         break;
   }
   gsd(22);
-  out_file_func(sig);
-  if(tok.value == SEMICOLON){
+  //OFF;
+  sig[0]=2;
+  sig[4]=0;
+  sig[3]=add;
+  OFF;
+  init_sig();//signalを初期化
+  return;
+  /*if(tok.value == SEMICOLON||tok.value == THEN){
     //セミコロンを読んだらリターン
     return;
     //statement();
   }
+  */
 }
 //条件分処理用関数
 void if_func(void){
   gsd(30);
   condition();
-  gsd(31);
+  //sd(31);
   //THEN
-  gsd(32);
+  //gsd(32);
+  //thenの処理
   if(tok.value == THEN){
-    gsd(33);
+    gsd(31);
     statement();
-    gsd(34);
+    //gsd(32);
+    //elseの処理
     if(tok.value == ELSE){
-      gsd(35);
+      lavel();
+      gsd(33);
       statement();
+      lavel();
     }
   }
 }
-//繰り返し文書利用関数
+//繰り返し文用関数
 void while_func(void){
   gsd(40);
   condition();
-  gsd(41);
+  //gsd(41);
   if(tok.value == DO){
     gsd(42);
     statement();
@@ -328,9 +391,29 @@ int exp_num(void){
   return tok.value;
 }
 int condition(void){
-  express();
-  gsd(50);
+  express(1);
+  deb(3);
+  //gsd(50);
   //比較演算子のスイッチ文を書く
-  gsd(51);
-  express();
+  switch(tok.value){
+    case EQL:
+    break;
+    case NOTEQL:
+    break;
+    case GRTRTHAN:
+    break;
+    case LESSTHAN:
+    break;
+    case GRTREQL:
+    break;
+    case LESSEQL:
+    break;
+  }
+  gsd(50);
+  express(1);
+}
+void init_sig(void){
+  for(int i =0;i<5;i++){
+    sig[i] = 0;
+  }
 }
