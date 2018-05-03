@@ -1,34 +1,14 @@
-loadi  R0,100
+loadi  R0,10
 store  R0,1
-loadi  R0,200
-store  R0,2
-load  R0,2
-load  R1,1
-subr  R0,R1
-loadr  R5,R0
-loadi  R0,50
-cmpr  R5,R0
-jge  L1
 loadi  R0,2
 load  R1,1
 mulr  R0,R1
-store  R0,3
-jmp  L2
-L1:
-loadi  R0,3
-load  R1,1
-mulr  R0,R1
-store  R0,3
-L2:
+store  R0,2
 load  R0,1
 writed  R0
 loadi  R0,10
 writec  R0
 load  R0,2
-writed  R0
-loadi  R0,10
-writec  R0
-load  R0,3
 writed  R0
 loadi  R0,10
 writec  R0

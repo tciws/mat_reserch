@@ -1,23 +1,13 @@
-loadi  R0,0
-store  R0,1
-loadi  R0,0
-store  R0,2
-L1:
-load  R0,1
-loadr  R5,R0
 loadi  R0,10
-loadr  R4,R0
-cmpr  R5,R4
-jgt  L2
-load  R0,2
+store  R0,1
+loadi  R0,2
 load  R1,1
-addr  R0,R1
+mulr  R0,R1
 store  R0,2
 load  R0,1
-addi  R0,1
-store  R0,1
-jmp  L1
-L2:
+writed  R0
+loadi  R0,10
+writec  R0
 load  R0,2
 writed  R0
 loadi  R0,10

@@ -278,7 +278,7 @@ void while_func(void){
   if(tok.value == DO){
     gsd(42);
     statement();
-    deb(1);
+    //deb(1);
     //強制ジャンプ
     sig[0]=8;
     sig[1]=0;
@@ -286,16 +286,6 @@ void while_func(void){
     OFF;
     write_label(temp2);
   }
-}
-//expressionから関数呼出しされる用の関数
-int exp_ident(void){
-  int tmp_ad;
-  tmp_ad=search();
-  return tmp_ad;
-}
-int exp_num(void){
-
-  return tok.value;
 }
 int condition(void){
   int temp,tsig;
