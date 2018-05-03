@@ -5,7 +5,7 @@ begin
    sum := 0;
    while i <= 10 do
    begin
-      sum := sum + 1;
+      sum := sum + i;
       i := i + 1;
    end;
    write sum

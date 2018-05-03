@@ -5,17 +5,19 @@
 #include"struc_inc.h"
 //
 //stack_e stack[STACK_MAX];
-extern TOKEN tok;
-extern FILE *infile;
-extern FILE *outfile;
-int spt = -1;
-extern hensu ide[H];
-extern TOKEN tok;
-extern int sym,num;
-extern int add;
-extern int typesel;
-extern int lv;
-extern int sig[5];
+TOKEN tok;
+FILE *infile;
+FILE *outfile;
+int spt;
+hensu ide[H];
+TOKEN tok;
+int sym,num;
+int add;
+int typesel;
+int lv;
+int sig[5];
+int rx[6];
+int label;
 //
 /*
 int push(int dt){
@@ -43,6 +45,18 @@ int pop(void){
   return dt;
 }
 */
+void write_label(int tmp){
+  int sig2[5];
+  for(int i;i<5;i++){
+    sig2[i]=sig[i];
+  }
+  sig[0]=10;
+  sig[3]=tmp;
+  OFF;
+  for(int i;i<5;i++){
+    sig[i]=sig2[i];
+  }
+}
 int search(void){
   int addrs = 0;
   //printf("add = %d\n",add);
@@ -85,8 +99,24 @@ void teigi(void){
   }
 }
 int lavel(void){
-  lv++;
-  return lv;
+  label++;
+  return label;
+}
+void init_reg(void){
+  for(int i = 0; i < 6; i++){
+    rx[i]=0;
+  }
+}
+int serch_reg(void){
+  for(int i = 5; i > 0; i--){
+    if(rx[i]==0){
+      rx[i]=1;
+      return i;
+    }
+    if(i==1){
+      return 0;
+    }
+  }
 }
 /*
 signal[0]->命令の種類
@@ -171,7 +201,7 @@ int out_file_func(int signal[5]){
         break;
         case 2:
         //register
-        fprintf(outfile, "subr  R%d,%d\n", signal[1],signal[2]);
+        fprintf(outfile, "subr  R%d,R%d\n", signal[1],signal[2]);
         break;
         case 3:
         //immediate
@@ -255,31 +285,31 @@ int out_file_func(int signal[5]){
     switch(signal[4]){
         case 0:
         //強制ジャンプ
-        fprintf(outfile, "jmp  %d\n",signal[3]);
+        fprintf(outfile, "jmp  L%d\n",signal[3]);
         break;
         case 1:
         //non0のときジャンプ
-        fprintf(outfile, "jnz  %d\n",signal[3]);
+        fprintf(outfile, "jnz  L%d\n",signal[3]);
         break;
         case 2:
         //eql0のときジャンプ
-        fprintf(outfile, "jz  %d\n",signal[3]);
+        fprintf(outfile, "jz  L%d\n",signal[3]);
         break;
         case 3:
         //>0のときジャンプ
-        fprintf(outfile, "jgt  %d\n",signal[3]);
+        fprintf(outfile, "jgt  L%d\n",signal[3]);
         break;
         case 4:
         //>=0のときジャンプ
-        fprintf(outfile, "jge  %d\n",signal[3]);
+        fprintf(outfile, "jge  L%d\n",signal[3]);
         break;
         case 5:
         //<0のときジャンプ
-        fprintf(outfile, "jlt  %d\n",signal[3]);
+        fprintf(outfile, "jlt  L%d\n",signal[3]);
         break;
         case 6:
         //<=0のときジャンプ
-        fprintf(outfile, "jle  %d\n",signal[3]);
+        fprintf(outfile, "jle  L%d\n",signal[3]);
         break;
     }
     break;
@@ -299,5 +329,9 @@ int out_file_func(int signal[5]){
       fprintf(outfile, "writec  R0\n");
       break;
     }
+    break;
+    case 10:
+    fprintf(outfile, "L%d:\n",signal[3]);
+    break;
   }
 }

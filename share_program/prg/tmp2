@@ -1,0 +1,5 @@
+L1:
+cmpr  R0,R0
+jge  L2
+jge  L1
+L2:

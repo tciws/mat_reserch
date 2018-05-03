@@ -4,14 +4,11 @@ loadi  R0,0
 store  R0,2
 L1:
 load  R0,1
-loadr  R5,R0
 loadi  R0,10
-loadr  R4,R0
-cmpr  R5,R4
-jgt  L2
+cmpr  R0,R0
+jge  L2
 load  R0,2
-load  R1,1
-addr  R0,R1
+addi  R0,1
 store  R0,2
 load  R0,1
 addi  R0,1
