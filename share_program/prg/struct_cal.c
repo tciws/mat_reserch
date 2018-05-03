@@ -5,19 +5,19 @@
 #include"struc_inc.h"
 //
 //stack_e stack[STACK_MAX];
-extern TOKEN tok;
-extern FILE *infile;
-extern FILE *outfile;
-int spt = -1;
-extern hensu ide[H];
-extern TOKEN tok;
-extern int sym,num;
-extern int add;
-extern int typesel;
-extern int lv;
-extern int sig[5];
-extern int rx[6];
-extern int label;
+TOKEN tok;
+FILE *infile;
+FILE *outfile;
+int spt;
+hensu ide[H];
+TOKEN tok;
+int sym,num;
+int add;
+int typesel;
+int lv;
+int sig[5];
+int rx[6];
+int label;
 //
 /*
 int push(int dt){

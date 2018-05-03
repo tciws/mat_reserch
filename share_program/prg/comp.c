@@ -3,41 +3,18 @@
 #include<stdlib.h>
 #include<getsym.h>
 #include"struc_inc.h"
-extern TOKEN tok;
-extern FILE *infile;
-extern FILE *outfile;
+TOKEN tok;
+FILE *infile;
+FILE *outfile;
 //
-void error(char *s);
-void statement(void);
-void ident_func(void);
-void rwo_func(void);
-int express(int t);
-int exp_ident(void);
-int exp_num(void);
-//void num_func(void);
-//void sym_func(void);
-//void ope_func(void);
-//void ident(void);
-//int push(int dt);
-//int pop(void);
-int search(void);
-void teigi(void);
-int condition(void);
-int lavel(void);
-void init_addr(void);
-void if_func(void);
-void while_func(void);
-int out_file_func(int signal[]);
-void init_sig(void);
-void init_reg(void);
-int serch_reg(void);
-void write_label(int tmp);
+
 //
 //
 //global
 //rx is register
 int rx[6];
 int sig[5];
+int spt = -1;
 //tmp用変数
 int osin;
 int sym,num;
@@ -46,6 +23,7 @@ int typesel = -1;
 int lv = 0;
 int st = 0;
 int label = 0;
+int caltimes = 0;
 /*+++++++
 即値0
 レジスタ1
@@ -250,135 +228,6 @@ void statement(void){
         */
   }
   return;
-}
-//指導書中EXPRESSION
-int express(int t){
-  init_sig();//signalを初期化
-  //gsd(7);
-  //変数か数字の分岐
-  int temp,treg;
-  switch(tok.attr){
-    case NUMBER:
-      sig[0]=1;
-      sig[1]=0;
-      sig[2]=0;
-      sig[3]=exp_num();
-      sig[4]=3;
-      //deb(1);
-      OFF;
-        break;
-    case IDENTIFIER:
-      sig[0]=1;
-      sig[1]=0;
-      sig[2]=0;
-      sig[3]=exp_ident();
-      sig[4]=0;
-      //deb(2);
-      OFF;
-        break;
-    default:
-        printf("error4\n");
-        break;
-  }
-  gsd(20);
-  /*if(tok.value == SEMICOLON||tok.value==THEN){
-    //セミコロンを読んだらリターン
-    //statement();
-    return;
-  }
-  */
-  switch (tok.value) {
-    case PLUS:
-    sig[0]= 3;
-    break;
-    case MINUS:
-    sig[0]= 4;
-    break;
-    case TIMES:
-    sig[0]= 5;
-    break;
-    case DIV:
-    sig[0]= 6;
-    break;
-    default:
-    printf("error7\n");
-    if(t==0){
-    sig[0]=2;
-    sig[1]=0;
-    sig[2]=0;
-    sig[3]=add;
-    sig[4]=0;
-    OFF;
-    return 0;
-    }
-    if(t==1){
-      sig[0] = 1;
-      sig[1]=serch_reg();
-      sig[2] = 0;
-      sig[3] = 0;
-      sig[4] = 2;
-      OFF;
-    }
-    return sig[1];//condition用関数に返す戻り値
-    break;
-  }
-  gsd(21);
-  switch(tok.attr){
-    case NUMBER:
-    //sig[0]は上のスイッチ文で定義済み
-      sig[1]=0;
-      sig[2]=0;
-      sig[3]=exp_num();
-      sig[4]=3;
-      OFF;
-        break;
-    case IDENTIFIER:
-    //sig[0]は上のスイッチ文で定義済み
-      temp = sig[0];//load命令書き込みのために一時退避
-      sig[0] = 1;
-      sig[1] = 1;
-      sig[2] = 0;
-      sig[3] = exp_ident();
-      sig[4] = 0;
-      OFF;
-      //退避した命令をロードして演算命令をロード
-      sig[0] = temp;
-      sig[1]=0;
-      sig[2] = 1;
-      sig[3] = 0;
-      sig[4] = 2;
-      OFF;
-        break;
-    default:
-        printf("error5\n");
-        break;
-  }
-  gsd(22);
-  //OFF;
-  //値をストアするための命令
-  if(t==0){
-  sig[0]=2;
-  sig[1]=0;
-  sig[2]=0;
-  sig[4]=0;
-  sig[3]=add;
-  OFF;
-  }
-  if(t==1){
-    sig[0] = 1;
-    sig[1]=serch_reg();
-    sig[2] = 0;
-    sig[3] = 0;
-    sig[4] = 2;
-    OFF;
-  }
-  return sig[1];
-  /*if(tok.value == SEMICOLON||tok.value == THEN){
-    //セミコロンを読んだらリターン
-    return;
-    //statement();
-  }
-  */
 }
 //条件分処理用関数
 void if_func(void){

@@ -8,9 +8,10 @@ loadr  R5,R0
 loadi  R0,10
 loadr  R4,R0
 cmpr  R5,R4
-jge  L2
+jgt  L2
 load  R0,2
-addi  R0,1
+load  R1,1
+addr  R0,R1
 store  R0,2
 load  R0,1
 addi  R0,1
