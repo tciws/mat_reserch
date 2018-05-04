@@ -197,7 +197,7 @@ int factor(int t,int times,int times2){
     //deb(2);
     OFF;
     }
-    if(times==1||times==0){
+    if(times==1||times2==1){
       //sig[0]は上のスイッチ文で定義済み
         temp = sig[0];//load命令書き込みのために一時退避
         sig[0] = 1;
