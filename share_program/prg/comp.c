@@ -12,7 +12,7 @@ FILE *outfile;
 //
 //global
 //rx is register
-int rx[6];
+int rx[4];
 int sig[5];
 int spt = -1;
 //tmp用変数
@@ -102,9 +102,9 @@ void statement(void){
       gsd(10);
       if(tok.value==BECOMES){
         gsd(11);
+        cal_times=0;
         express(0);
         //deb(11);
-        cal_times=0;
         add = 0;
       }
         break;
@@ -242,6 +242,7 @@ void if_func(void){
   //gsd(32);
   //thenの処理
   temp = lavel();
+  temp2=lavel();
   //condition関数内でsig[1]は定義済み
   sig[0]=8;
   sig[3]=temp;
@@ -251,7 +252,6 @@ void if_func(void){
     statement();
     //gsd(32);
     //強制ジャンプ
-    temp2=lavel();
     sig[0]=8;
     sig[1]=0;
     sig[3]=temp2;
@@ -292,8 +292,8 @@ void while_func(void){
 }
 int condition(void){
   int temp,tsig;
-  temp=express(1);
   cal_times = 0;
+  temp=express(1);
   printf("temp=%d\n",temp);
   //deb(3);
   //gsd(50);
@@ -325,8 +325,8 @@ int condition(void){
     break;
   }
   gsd(50);
-  sig[2]=express(1);
   cal_times=0;
+  sig[2]=express(1);
   printf("temp=%d\n",sig[2]);
   //比較処理
   sig[0]=7;

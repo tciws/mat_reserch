@@ -1,0 +1,239 @@
+Input output filename >>Initialization Resister array...
+Initialization variable array...
+Initialization signal array...
++++++++++++++++++++++
+0->compiler
+1->statement
+2->express
+3->if_func
+4->while_func
+5->condition
++++++++++++++++++++++
+tok.attr=3,tok.velue=267,tok.charvalue=program
+debug_flag= 1
+tok.attr=1,tok.velue=267,tok.charvalue=ex22
+debug_flag= 2
+tok.attr=4,tok.velue=59,tok.charvalue=;
+debug_flag= 3
+tok.attr=3,tok.velue=269,tok.charvalue=var
+debug_flag= 4
+##x,1
+##y,2
+##z,3
+tok.attr=3,tok.velue=260,tok.charvalue=begin
+debug_flag=15
+tok.attr=1,tok.velue=260,tok.charvalue=x
+debug_flag=12
+tok.attr=4,tok.velue=256,tok.charvalue=:=
+debug_flag=10
+tok.attr=2,tok.velue=100,tok.charvalue=100
+debug_flag=11
+tok.attr=4,tok.velue=59,tok.charvalue=;
+debug_flag=71
+
++++++++
+flag[1] = 1
++++++++
+
+ここに最終変数のアドレスに代入
+
++++++++
+flag[40] = 10000
++++++++
+
+
++++++++
+flag[42] = 0
++++++++
+
+tok.attr=1,tok.velue=59,tok.charvalue=y
+debug_flag=12
+tok.attr=4,tok.velue=256,tok.charvalue=:=
+debug_flag=10
+tok.attr=2,tok.velue=200,tok.charvalue=200
+debug_flag=11
+tok.attr=4,tok.velue=59,tok.charvalue=;
+debug_flag=71
+
++++++++
+flag[1] = 1
++++++++
+
+ここに最終変数のアドレスに代入
+
++++++++
+flag[40] = 10001
++++++++
+
+
++++++++
+flag[42] = 0
++++++++
+
+tok.attr=3,tok.velue=265,tok.charvalue=if
+debug_flag=12
+tok.attr=1,tok.velue=265,tok.charvalue=y
+debug_flag=30
+tok.attr=4,tok.velue=45,tok.charvalue=-
+debug_flag=70
+tok.attr=1,tok.velue=45,tok.charvalue=x
+debug_flag=51
+tok.attr=4,tok.velue=259,tok.charvalue=>=
+debug_flag=70
+ここに代入
+
++++++++
+flag[40] = 10002
++++++++
+
+
++++++++
+flag[41] = 4
++++++++
+
+
++++++++
+flag[42] = 10003
++++++++
+
+
++++++++
+flag[40] = 10002
++++++++
+
+
++++++++
+flag[42] = 10003
++++++++
+
+temp=3
+tok.attr=2,tok.velue=50,tok.charvalue=50
+debug_flag=50
+tok.attr=3,tok.velue=268,tok.charvalue=then
+debug_flag=71
+ここに代入
+
++++++++
+flag[40] = 10004
++++++++
+
+
++++++++
+flag[42] = 0
++++++++
+
+temp=2
+tok.attr=1,tok.velue=268,tok.charvalue=z
+debug_flag=31
+tok.attr=4,tok.velue=256,tok.charvalue=:=
+debug_flag=10
+tok.attr=2,tok.velue=2,tok.charvalue=2
+debug_flag=11
+tok.attr=4,tok.velue=42,tok.charvalue=*
+debug_flag=71
+tok.attr=1,tok.velue=42,tok.charvalue=x
+debug_flag=60
+tok.attr=3,tok.velue=263,tok.charvalue=else
+debug_flag=70
+ここに途中結果をメモリに書き込み4
+
++++++++
+flag[-10] = 5
++++++++
+
+
++++++++
+flag[60] = 10005
++++++++
+
+
++++++++
+flag[61] = 2
++++++++
+
+
++++++++
+flag[62] = 10006
++++++++
+
+
++++++++
+flag[1] = 1
++++++++
+
+ここに最終変数のアドレスに代入
+
++++++++
+flag[40] = 10007
++++++++
+
+
++++++++
+flag[42] = 0
++++++++
+
+tok.attr=1,tok.velue=263,tok.charvalue=z
+debug_flag=33
+tok.attr=4,tok.velue=256,tok.charvalue=:=
+debug_flag=10
+tok.attr=2,tok.velue=3,tok.charvalue=3
+debug_flag=11
+tok.attr=4,tok.velue=42,tok.charvalue=*
+debug_flag=71
+tok.attr=1,tok.velue=42,tok.charvalue=x
+debug_flag=60
+tok.attr=4,tok.velue=59,tok.charvalue=;
+debug_flag=70
+ここに途中結果をメモリに書き込み4
+
++++++++
+flag[-10] = 5
++++++++
+
+
++++++++
+flag[60] = 10008
++++++++
+
+
++++++++
+flag[61] = 2
++++++++
+
+
++++++++
+flag[62] = 10009
++++++++
+
+
++++++++
+flag[1] = 1
++++++++
+
+ここに最終変数のアドレスに代入
+
++++++++
+flag[40] = 10010
++++++++
+
+
++++++++
+flag[42] = 0
++++++++
+
+tok.attr=3,tok.velue=272,tok.charvalue=write
+debug_flag=12
+tok.attr=1,tok.velue=272,tok.charvalue=x
+debug_flag=16
+tok.attr=4,tok.velue=44,tok.charvalue=,
+debug_flag=17
+tok.attr=1,tok.velue=44,tok.charvalue=y
+debug_flag=16
+tok.attr=4,tok.velue=44,tok.charvalue=,
+debug_flag=17
+tok.attr=1,tok.velue=44,tok.charvalue=z
+debug_flag=16
+tok.attr=3,tok.velue=264,tok.charvalue=end
+debug_flag=17
+tok.attr=4,tok.velue=46,tok.charvalue=.
+debug_flag=13

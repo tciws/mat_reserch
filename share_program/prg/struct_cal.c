@@ -16,7 +16,7 @@ int add;
 int typesel;
 int lv;
 int sig[5];
-int rx[6];
+int rx[4];
 int label;
 int num_add = ADDBEGIN;
 //
@@ -106,7 +106,7 @@ int lavel(void){
   return label;
 }
 void init_reg(void){
-  for(int i = 0; i < 6; i++){
+  for(int i = 0; i < 4; i++){
     rx[i]=0;
   }
 }
@@ -117,13 +117,10 @@ void init_local_array(int array[]){
   }
 }
 int serch_reg(void){
-  for(int i = 5; i > 0; i--){
+  for(int i = 3; i >=0; i--){
     if(rx[i]==0){
       rx[i]=1;
       return i;
-    }
-    if(i==1){
-      return 0;
     }
   }
 }

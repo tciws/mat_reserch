@@ -15,6 +15,7 @@
 #define FLAG(t,f) printf("\n+++++++\nflag[%d] = %d\n+++++++\n\n",t,f);
 #define SHOW_ARRAY(flag,array,max) do{printf("###############\n");for(int i=0;i<max;i++){printf("array%d[%d]=%d\n",flag,i,array[i]);}printf("###############\n");}while(0);
 #define INPUT_LOCAL(num) do{LOCAL[LOCAL_TOP]=num;LOCAL_TOP++;}while(0);
+#define SIGNAL(a,b,c,d,e) do{sig[0]=a;sig[1]=b;sig[2]=c;sig[3]=d;sig[4]=e;OFF;}while(0);
 typedef struct {
   int num[N];
   int head;
@@ -46,10 +47,11 @@ extern int add;
 extern int typesel;
 extern int lv;
 extern int sig[SIG_MAX];
-extern int rx[6];
+extern int rx[4];
 extern int label;
 extern int osin;
 extern int st;
+extern int st2;
 extern int cal_times;
 extern int num_add;
 extern int sym_counter;
