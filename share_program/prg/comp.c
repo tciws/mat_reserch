@@ -97,12 +97,15 @@ void statement(void){
     //指導書構文図中ident
     case IDENTIFIER:
     add=exp_ident();
-    printf("address = %d\n",add);
+    //printf("address = %d\n",add);
     //BECCOME出す用getsym
       gsd(10);
       if(tok.value==BECOMES){
         gsd(11);
         express(0);
+        //deb(11);
+        cal_times=0;
+        add = 0;
       }
         break;
     //指導書公文図中begin,if,whileなど
@@ -290,6 +293,7 @@ void while_func(void){
 int condition(void){
   int temp,tsig;
   temp=express(1);
+  cal_times = 0;
   printf("temp=%d\n",temp);
   //deb(3);
   //gsd(50);
@@ -322,6 +326,7 @@ int condition(void){
   }
   gsd(50);
   sig[2]=express(1);
+  cal_times=0;
   printf("temp=%d\n",sig[2]);
   //比較処理
   sig[0]=7;

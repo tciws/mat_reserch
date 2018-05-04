@@ -18,6 +18,7 @@ int lv;
 int sig[5];
 int rx[6];
 int label;
+int num_add = ADDBEGIN;
 //
 /*
 int push(int dt){
@@ -76,7 +77,8 @@ int search(void){
   return 0;
 }
 void teigi(void){
-  gsd(-1);
+  //gsd(-1);
+  getsym();
   int i;
   for(i = 0; i < H; i++){
     //printf("####%s,%d\n",ide[i].ptr,ide[i].adr);
@@ -90,7 +92,8 @@ void teigi(void){
       break;
     }
   }
-  gsd(-2);
+  //gsd(-2);
+  getsym();
   if(tok.value == COMMA){
     teigi();
   }
@@ -107,6 +110,12 @@ void init_reg(void){
     rx[i]=0;
   }
 }
+void init_local_array(int array[]){
+  int i;
+  for(i=0;i<LOCAL_ARRAY;i++){
+    array[i]=0;
+  }
+}
 int serch_reg(void){
   for(int i = 5; i > 0; i--){
     if(rx[i]==0){
@@ -117,6 +126,17 @@ int serch_reg(void){
       return 0;
     }
   }
+}
+int issue_addr(void){
+  int temp;
+  temp = num_add;
+  num_add++;
+  //格納するためのアドレスを発行
+  return temp;
+}
+int serch_label(void){
+  //開いているラベルを発行
+  return 0;
 }
 /*
 signal[0]->命令の種類
