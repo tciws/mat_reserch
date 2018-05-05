@@ -211,7 +211,7 @@ int express(int t){
     tmp = serch_reg();
     FLAG(57,tmp);
     SIGNAL(1,tmp,0,0,2);
-    return 0;
+    return tmp;
     }
     //カッコ内の計算結果を返す
     /*
