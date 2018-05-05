@@ -200,8 +200,6 @@ store  R0,10059
 load  R0,10059
 store  R0,6
 jmp  L4
-L3:
-L4:
 load  R0,1
 store  R0,10060
 loadi  R0,1
@@ -224,13 +222,25 @@ mulr  R0,R1
 store  R0,10065
 load  R0,10065
 store  R0,5
-load  R0,5
+load  R0,1
+writed  R0
+loadi  R0,10
+writec  R0
+load  R0,2
+writed  R0
+loadi  R0,10
+writec  R0
+load  R0,3
+writed  R0
+loadi  R0,10
+writec  R0
+load  R0,4
 writed  R0
 loadi  R0,10
 writec  R0
 halt
+E0:data 100000
 E1:data 100000
 E2:data 100000
 E3:data 100000
-E4:data 100000
-E5:data 1000000
+E4:data 1000000
