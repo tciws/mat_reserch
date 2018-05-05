@@ -246,7 +246,7 @@ int express(int t){
     return result;
     }
     cal_times--;
-  }st
+  }
   return 0;
 }
 //gsd(6X)
@@ -405,6 +405,7 @@ int factor(int t,int times){
       return kakko_result;
     }
     }
+    return 0;
 }
 //expressionから関数呼出しされる用の関数
 int exp_ident(void){
@@ -415,7 +416,7 @@ int exp_ident(void){
 int exp_num(void){
   //即値で用意できるかの検証
   if(tok.value < -32768 || 32767 < tok.value){
-  }else{
-    return tok.value;
+    //即値で賄えないときの処理
   }
+    return tok.value;
 }
