@@ -262,12 +262,12 @@ void if_func(void){
     sig[3]=temp2;
     OFF;
     //elseの処理
+    write_label(temp);
     if(tok.value == ELSE){
-      write_label(temp);
       gsd(33);
       statement();
-      write_label(temp2);
     }
+    write_label(temp2);
   }
 }
 //繰り返し文用関数
