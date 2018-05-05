@@ -336,6 +336,7 @@ int condition(void){
   OFF;
   sig[4]=tsig;
   init_reg();
+  return 0;
 }
 void init_sig(void){
   for(int i =0;i<5;i++){

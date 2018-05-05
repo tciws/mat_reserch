@@ -123,6 +123,7 @@ int serch_reg(void){
       return i;
     }
   }
+  return 0;
 }
 int issue_addr(void){
   int temp;
@@ -351,4 +352,5 @@ int out_file_func(int signal[5]){
     fprintf(outfile, "L%d:\n",signal[3]);
     break;
   }
+  return 0;
 }
