@@ -62,6 +62,7 @@ store  R0,10017
 load  R0,10017
 load  R1,10016
 divr  R0,R1
+writed  R0
 store  R0,10018
 load  R0,E2
 store  R0,10019
@@ -82,6 +83,7 @@ store  R0,10023
 load  R0,10023
 load  R1,10022
 divr  R0,R1
+writed  R0
 store  R0,10024
 load  R0,10024
 store  R0,2
@@ -92,6 +94,7 @@ store  R0,10026
 load  R0,10026
 load  R1,10025
 divr  R0,R1
+writed  R0
 store  R0,10027
 load  R0,10027
 store  R0,7
@@ -128,6 +131,7 @@ store  R0,10038
 load  R0,10038
 load  R1,10037
 divr  R0,R1
+writed  R0
 store  R0,10039
 load  R0,E4
 store  R0,10040
@@ -148,6 +152,7 @@ store  R0,10044
 load  R0,10044
 load  R1,10043
 divr  R0,R1
+writed  R0
 store  R0,10045
 load  R0,10045
 store  R0,2
@@ -158,6 +163,7 @@ store  R0,10047
 load  R0,10047
 load  R1,10046
 divr  R0,R1
+writed  R0
 store  R0,10048
 load  R0,10048
 store  R0,8
