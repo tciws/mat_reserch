@@ -27,7 +27,7 @@ loadi  R0,1000
 store  R0,10006
 load  R0,10006
 loadr  R2,R0
-cmpr  R0,R0
+cmpr  R3,R2
 jge  L2
 load  R0,2
 store  R0,10007
@@ -187,7 +187,7 @@ load  R0,E5
 store  R0,10056
 load  R0,10056
 loadr  R2,R0
-cmpr  R0,R0
+cmpr  R3,R2
 jge  L3
 load  R0,6
 store  R0,10057
