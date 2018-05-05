@@ -22,15 +22,16 @@ int num_add = ADDBEGIN;
 int issued_labels = 0;
 int label_array[N] = {};
 //
-/*
+stack_e stack[STACK_MAX];
 int push(int dt){
   if(spt >= STACK_MAX - 1){
     return -1;
   }
   spt++;
+  stack[spt].idno = spt;
   stack[spt].data = dt;
   for(int i = 0; i <=spt; i++){
-    printf("%c\n",stack[i].data);
+    printf("%d\n",stack[i].data);
     if(i == spt){
       printf("#################\n");
     }
@@ -40,6 +41,12 @@ int push(int dt){
 
 int pop(void){
   int dt;
+  for(int i = 0; i <=spt; i++){
+    printf("%d\n",stack[i].data);
+    if(i == spt){
+      printf("++++++++++++++++\n");
+    }
+  }
   if(spt < 0){
     return -1;
   }
@@ -47,7 +54,12 @@ int pop(void){
   spt--;
   return dt;
 }
-*/
+int show_stack(no){
+  if(spt>=0 && no >=0){
+    return stack[no].data;
+  }
+    return -1;
+}
 void write_label(int tmp){
   int sig2[5];
   for(int i;i<5;i++){

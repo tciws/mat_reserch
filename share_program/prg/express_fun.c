@@ -12,7 +12,8 @@ int add;
 int typesel;
 int lv;
 int st;
-int st2;
+int spt;
+int st2[100] = {};
 int label;
 int cal_times;
 int cal_tmp[2] = {};
@@ -139,10 +140,10 @@ hensu ide[H];
 //gsd(5X)
 int express(int t){
   cal_times++;
-  st = 0;
   int cont1=0;
   int result = 0;
   int return_num=0;
+  int inst_signal=0;
   int tmp;
   int tmp_reg=0;
   int cal_result[2]={};
@@ -154,104 +155,109 @@ int express(int t){
   switch (tok.value) {
     case PLUS:
     //ファイル書き込み処理
-    st=3;
+    //st2[st]=3;
+    push(3);
+    //st++;
     gsd(50);
     cont1++;
     goto ter;
     break;
     case MINUS:
     //ファイル書き込み処理
-    st=4;
+    //st2[st]=4;
+    //st++;
+    push(4);
     gsd(51);
     cont1++;
     goto ter;
     break;
   }
-    if(cal_times == 1 && t == 0){
-          FLAG(1,cal_times);
-    printf("ここに最終変数のアドレスに代入\n");
+    tmp = show_stack(spt-1);
+    //FLAG(100,tmp);
+    inst_signal=0;
+    if(tmp != 10 && tmp != -1){
+      printf("ここに途中結果をメモリに書き込み2\n");
+      cal_result[0]=pop();
+      tmp = pop();
+      cal_result[1]=pop();
       SIGNAL(1,0,0,cal_result[0],0);
-    if(cal_result[1]>0 && st != 0){
       SIGNAL(1,1,0,cal_result[1],0);
-      SIGNAL(st,0,1,0,2);
-      FLAG(40,cal_result[0]);
-      FLAG(41,st);
-      FLAG(42,cal_result[1]);
+      SIGNAL(tmp,0,1,0,2);
+      result=issue_addr();
+      push(result);
+      SIGNAL(2,0,0,result,0);
+      //tmp = pop();
+      FLAG(50,cal_result[0]);
+      FLAG(51,tmp);
+      FLAG(52,cal_result[1]);
+      FLAG(53,result);
+      inst_signal++;
     }
-    if(cal_result[1]>0 && st2 != 0){
-      SIGNAL(1,1,0,cal_result[1],0);
-      SIGNAL(st2,0,1,0,2);
-      FLAG(40,cal_result[0]);
-      FLAG(41,st2);
-      FLAG(42,cal_result[1]);
-    }
-    FLAG(40,cal_result[0]);
-    FLAG(42,cal_result[1]);
+    tmp = show_stack(spt);
+    if(tmp != -1 && cal_times == 1 && t == 0){
+    printf("ここに最終変数のアドレスに代入\n");
+    tmp = pop();
+    FLAG(54,tmp);
+    FLAG(55,add);
+    SIGNAL(1,0,0,tmp,0);
     SIGNAL(2,0,0,add,0);
     return 0;
-    //結果はaddが持つ値にストア
-    }else{
-    if(t==0){
-    printf("ここに途中結果をメモリに書き込み\n");
-    //演算子を退避
-    tmp = sig[0];
+    }
+    if(tmp != -1 && cal_times == 1 && t == 1){
+    printf("ここに最終変数のアドレスに代入\n");
+    tmp = pop();
+    FLAG(56,tmp);
+    SIGNAL(1,0,0,tmp,0);
+    tmp = serch_reg();
+    FLAG(57,tmp);
+    SIGNAL(1,tmp,0,0,2);
+    return 0;
+    }
+    //カッコ内の計算結果を返す
+    /*
+    if(cal_times == 1 && t == 0){
+    printf("ここに最終変数のアドレスに代入\n");
+    FLAG(1,cal_times);
+    SHOW_ARRAY(1,st2,10);
     SIGNAL(1,0,0,cal_result[0],0);
-    SIGNAL(1,1,0,cal_result[1],0);
-    SIGNAL(tmp,0,1,0,2);
-    result=issue_addr();
-    SIGNAL(2,0,0,result,1);
-    FLAG(50,cal_result[0]);
-    FLAG(51,sig[0]);
-    FLAG(52,cal_result[1]);
-    return result;
-    }
-    }
-    //condition専用線
-    if(cal_times == 1 && t == 1){
-    printf("ここに代入\n");
-      SIGNAL(1,0,0,cal_result[0],0);
     if(cal_result[1]>0 && st != 0){
       SIGNAL(1,1,0,cal_result[1],0);
-      SIGNAL(st,0,1,0,2);
+      SIGNAL(st2[st],0,1,0,2);
       FLAG(40,cal_result[0]);
-      FLAG(41,st);
-      FLAG(42,cal_result[1]);
-    }
-    if(cal_result[1]>0 && st2 != 0){
-      SIGNAL(1,1,0,cal_result[1],0);
-      SIGNAL(st2,0,1,0,2);
-      FLAG(40,cal_result[0]);
-      FLAG(41,st2);
+      FLAG(41,st2[st]);
       FLAG(42,cal_result[1]);
     }
     FLAG(40,cal_result[0]);
     FLAG(42,cal_result[1]);
-    tmp_reg = serch_reg();
-    SIGNAL(1,tmp_reg,0,0,2);
-    return tmp_reg;
+
+    st--;
+    return 0;
     //結果はaddが持つ値にストア
-    }else{
-    if(t==1){
-    printf("ここに途中結果memoryに書き込み\n");
+    }
+    else{
+      tmp = show_stack();
+    if(t==0 && tmp!=-1){
+    printf("ここに途中結果をメモリに書き込み\n");
     //演算子を退避
-    tmp = sig[0];
-    SIGNAL(1,0,0,cal_result[0],0);
-    SIGNAL(1,1,0,cal_result[1],0);
-    SIGNAL(tmp,0,1,0,2);
-    result=issue_addr();
-    SIGNAL(2,0,0,result,1);
+    //SIGNAL(1,0,0,cal_result[0],0);
+    //SIGNAL(1,1,0,cal_result[1],0);
+    //SIGNAL(st2[st],0,1,0,2);
+    //result=issue_addr();
+    //SIGNAL(2,0,0,result,1);
+    tmp=pop();
     FLAG(50,cal_result[0]);
-    FLAG(51,sig[0]);
+    FLAG(51,tmp);
     FLAG(52,cal_result[1]);
+    //st--;
     return result;
     }
-    cal_times--;
-  }
-  return 0;
+    }
+  */
+    //condition専用線
+    return 0;
 }
 //gsd(6X)
 int term(int t,int times){
-  st2 = 0;
   int cont2=0;
   int tmp;
   int return_num=0;
@@ -264,52 +270,38 @@ int term(int t,int times){
   //演算子が２つ配列に格納された時の処理
   switch (tok.value) {
     case TIMES:
-    //ファイル書き込み処理
-    st2=5;
+    push(5);
     gsd(60);
     cont2++;
     goto fac;
     break;
     case DIV:
-    //ファイル書き込み処理
-    st2=6;
+    push(6);
     gsd(61);
     cont2++;
     goto fac;
     break;
   }
-  //deb(32);
-  if(st != 0 && st2 != 0){
+  tmp = show_stack(spt - 1);
+  //FLAG(1000,tmp);
+  if(tmp != 10 && tmp != -1){
   printf("ここに途中結果をメモリに書き込み3\n");
-  //tmp = sig[0];
+  cal_result[0]=pop();
+  tmp = pop();
+  cal_result[1]=pop();
   SIGNAL(1,0,0,cal_result[0],0);
   SIGNAL(1,1,0,cal_result[1],0);
-  SIGNAL(st2,0,1,0,2);
-  result=issue_addr();
-  SIGNAL(2,0,0,result,1);
-  FLAG(-10,st2);
+  SIGNAL(tmp,0,1,0,2);
+  result = issue_addr();
+  push(result);
+  SIGNAL(2,0,0,result,0);
   FLAG(60,cal_result[0]);
-  FLAG(61,sig[0]);
+  FLAG(61,tmp);
   FLAG(62,cal_result[1]);
-  st2 = 0;
-  return result;
-  //SHOW_ARRAY(2,LOCAL,LOCAL_TOP);
-  //FLAG(2,cont2);
-}else if(st2 != 0){
-  printf("ここに途中結果をメモリに書き込み4\n");
-  SIGNAL(1,0,0,cal_result[0],0);
-  SIGNAL(1,1,0,cal_result[1],0);
-  SIGNAL(st2,0,1,0,2);
-  result=issue_addr();
-  SIGNAL(2,0,0,result,1);
-  FLAG(-10,st2);
-  FLAG(60,cal_result[0]);
-  FLAG(61,sig[0]);
-  FLAG(62,cal_result[1]);
-  st2 = 0;
+  FLAG(63,result);
   return result;
 }
-  return cal_result[0];
+  return cal_result[cont2];
 }
 //gsd(7X)
 int factor(int t,int times){
@@ -321,11 +313,12 @@ int factor(int t,int times){
   switch(tok.attr){
     case IDENTIFIER:
     //ロード処理
-    temp=exp_ident();;
+    temp=exp_ident();
     SIGNAL(1,0,0,temp,0);
     gsd(70);
     //ストア処理
     temp=issue_addr();
+    push(temp);
     SIGNAL(2,0,0,temp,0);
     //次の演算子を覗き見
     /*
@@ -355,7 +348,7 @@ int factor(int t,int times){
       //数字が即値で入らない場合の処理
     if(tok.value < -32768 || 32767 < tok.value){
       //
-      temp = num_lavel(tok.value);
+      temp = exp_num();
       SIGNAL(1,0,0,temp,1);
     }else{
     temp=exp_num();//後でアドレスを吐く処理に変更
@@ -363,6 +356,7 @@ int factor(int t,int times){
     }
     //ストア処理
     temp=issue_addr();
+    push(temp);
     SIGNAL(2,0,0,temp,0);
     gsd(71);
     //次の演算子を覗き見
@@ -395,7 +389,12 @@ int factor(int t,int times){
     if(tok.attr == SYMBOL && tok.value == LPAREN){
       gsd(73);
       sym_counter = 0;
-      kakko_result = express(t);
+      push(10);
+      express(t);
+      kakko_result = pop();
+      pop();
+      push(kakko_result);
+      cal_times--;
       //eb(44);
       gsd(74);
       return kakko_result;
@@ -411,8 +410,11 @@ int exp_ident(void){
 }
 int exp_num(void){
   //即値で用意できるかの検証
+  int temp;
   if(tok.value < -32768 || 32767 < tok.value){
     //即値で賄えないときの処理
+    temp = num_lavel(tok.value);
+    return temp;
   }
     return tok.value;
 }
