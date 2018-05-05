@@ -56,7 +56,8 @@ extern int cal_times;
 extern int num_add;
 extern int sym_counter;
 extern int cal_tmp[2];
-
+extern int issued_labels;
+extern int label_array[N];
 void error(char *s);
 void statement(void);
 void ident_func(void);
@@ -84,6 +85,7 @@ int serch_reg(void);
 void write_label(int tmp);
 int term(int t,int times);
 int factor(int t,int times);
+int num_lavel(int deg);
 void init_local_array(int array[]);
 //ラベル処理が必要な時のに呼ぶ関数
 //ラベリング関数
@@ -91,3 +93,4 @@ int serch_label(void);
 //変数以外の数字を一時退避する関数
 //数字を格納するためのアドレスを発行する関数
 int issue_addr(void);
+int store_lavel(void);

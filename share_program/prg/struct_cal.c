@@ -19,6 +19,8 @@ int sig[5];
 int rx[4];
 int label;
 int num_add = ADDBEGIN;
+int issued_labels = 0;
+int label_array[N] = {};
 //
 /*
 int push(int dt){
@@ -102,8 +104,26 @@ void teigi(void){
   }
 }
 int lavel(void){
+  //ジャンプ用
   label++;
   return label;
+}
+
+int num_lavel(int deg){
+  //即値代入できない場合の処理
+  label_array[issued_labels] = deg;
+  issued_labels++;
+  //label++;
+  return issued_labels;
+}
+int store_lavel(void){
+  //即値代入できない場合の処理
+  int i;
+  for(i=0;i<issued_labels;i++){
+      SIGNAL(11,0,0,i,label_array[i]);
+  }
+  //label++;
+  return 0;
 }
 void init_reg(void){
   for(int i = 0; i < 4; i++){
@@ -154,7 +174,7 @@ int out_file_func(int signal[5]){
         break;
         case 1:
         //label
-        fprintf(outfile, "load  R%d,%d\n", signal[1],signal[3]);
+        fprintf(outfile, "load  R%d,E%d\n", signal[1],signal[3]);
         break;
         case 2:
         //resister
@@ -177,7 +197,7 @@ int out_file_func(int signal[5]){
         break;
         case 1:
         //label
-        fprintf(outfile, "store  R%d,%d\n", signal[1],signal[3]);
+        fprintf(outfile, "store  R%d,E%d\n", signal[1],signal[3]);
         break;
         case 2:
         break;
@@ -192,7 +212,7 @@ int out_file_func(int signal[5]){
         break;
         case 1:
         //label
-        fprintf(outfile, "add  R%d,%d\n", signal[1],signal[3]);
+        fprintf(outfile, "add  R%d,E%d\n", signal[1],signal[3]);
         break;
         case 2:
         //register
@@ -215,7 +235,7 @@ int out_file_func(int signal[5]){
         break;
         case 1:
         //label
-        fprintf(outfile, "sub  R%d,%d\n", signal[1],signal[3]);
+        fprintf(outfile, "sub  R%d,E%d\n", signal[1],signal[3]);
         break;
         case 2:
         //register
@@ -238,7 +258,7 @@ int out_file_func(int signal[5]){
         break;
         case 1:
         //label
-        fprintf(outfile, "mul  R%d,%d\n", signal[1],signal[3]);
+        fprintf(outfile, "mul  R%d,E%d\n", signal[1],signal[3]);
         break;
         case 2:
         //register
@@ -261,7 +281,7 @@ int out_file_func(int signal[5]){
         break;
         case 1:
         //label
-        fprintf(outfile, "div  R%d,%d\n", signal[1],signal[3]);
+        fprintf(outfile, "div  R%d,E%d\n", signal[1],signal[3]);
         break;
         case 2:
         //register
@@ -284,7 +304,7 @@ int out_file_func(int signal[5]){
         break;
         case 1:
         //label
-        fprintf(outfile, "cmp  R%d,%d\n", signal[1],signal[3]);
+        fprintf(outfile, "cmp  R%d,E%d\n", signal[1],signal[3]);
         break;
         case 2:
         //register
@@ -350,6 +370,13 @@ int out_file_func(int signal[5]){
     break;
     case 10:
     fprintf(outfile, "L%d:\n",signal[3]);
+    break;
+    case 11:
+    //サイズの大きな値を格納用
+    fprintf(outfile, "E%d:data %d\n",signal[3],signal[4]);
+    break;
+    case 12:
+    fprintf(outfile, "halt\n");
     break;
   }
   return 0;
