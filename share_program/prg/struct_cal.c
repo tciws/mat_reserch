@@ -131,7 +131,7 @@ int num_lavel(int deg){
 int store_lavel(void){
   //即値代入できない場合の処理
   int i;
-  for(i=0;i<issued_labels;i++){
+  for(i=1;i<=issued_labels;i++){
       SIGNAL(11,0,0,i,label_array[i]);
   }
   //label++;
