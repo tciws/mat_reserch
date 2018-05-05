@@ -106,6 +106,8 @@ void statement(void){
       if(tok.value==BECOMES){
         gsd(11);
         cal_times=0;
+        //st2[100]={};
+        st = 0;
         express(0);
         //deb(11);
         add = 0;
@@ -296,6 +298,8 @@ void while_func(void){
 int condition(void){
   int temp,tsig;
   cal_times = 0;
+  //st2[100]={};
+  st = 0;
   temp=express(1);
   printf("temp=%d\n",temp);
   //deb(3);
@@ -329,6 +333,8 @@ int condition(void){
   }
   gsd(50);
   cal_times=0;
+  //st2[100]={};
+  st = 0;
   sig[2]=express(1);
   printf("temp=%d\n",sig[2]);
   //比較処理
