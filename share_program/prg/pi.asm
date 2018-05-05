@@ -227,8 +227,8 @@ writed  R0
 loadi  R0,10
 writec  R0
 halt
-E0:data 100000
 E1:data 100000
 E2:data 100000
 E3:data 100000
-E4:data 1000000
+E4:data 100000
+E5:data 1000000

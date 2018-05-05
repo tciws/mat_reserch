@@ -54,7 +54,7 @@ int pop(void){
   spt--;
   return dt;
 }
-int show_stack(no){
+int show_stack(int no){
   if(spt>=0 && no >=0){
     return stack[no].data;
   }
@@ -123,8 +123,8 @@ int lavel(void){
 
 int num_lavel(int deg){
   //即値代入できない場合の処理
-  label_array[issued_labels] = deg;
   issued_labels++;
+  label_array[issued_labels] = deg;
   //label++;
   return issued_labels;
 }
