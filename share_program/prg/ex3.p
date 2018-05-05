@@ -1,7 +1,13 @@
 program ex3;
-var x, y;
+var i, rand, ca, cm, pi, qpi, x, y;
 begin
-   x := 2*3+3*2;
-   y := 3*(((1+2)*4)+2);
-   write x, y
+   i := 0;
+   qpi := 0;
+   rand := 3827;
+   ca := 8358;
+   cm := 3797;
+   rand := (rand + ca) * cm - (((rand + ca) * cm) div 100000) * 100000;
+   rand := rand div 10;
+   x := rand div 10;
+     write rand,x
 end.
