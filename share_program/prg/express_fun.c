@@ -177,9 +177,9 @@ int express(int t){
     inst_signal=0;
     if(tmp != 10 && tmp != -1){
       printf("ここに途中結果をメモリに書き込み2\n");
-      cal_result[0]=pop();
-      tmp = pop();
       cal_result[1]=pop();
+      tmp = pop();
+      cal_result[0]=pop();
       SIGNAL(1,0,0,cal_result[0],0);
       SIGNAL(1,1,0,cal_result[1],0);
       SIGNAL(tmp,0,1,0,2);
@@ -286,9 +286,9 @@ int term(int t,int times){
   //FLAG(1000,tmp);
   if(tmp != 10 && tmp != -1){
   printf("ここに途中結果をメモリに書き込み3\n");
-  cal_result[0]=pop();
-  tmp = pop();
   cal_result[1]=pop();
+  tmp = pop();
+  cal_result[0]=pop();
   SIGNAL(1,0,0,cal_result[0],0);
   SIGNAL(1,1,0,cal_result[1],0);
   SIGNAL(tmp,0,1,0,2);
