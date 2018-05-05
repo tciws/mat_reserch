@@ -21,12 +21,12 @@ typedef struct {
   int head;
   int tail;
 } queue;
-/*
+
 typedef struct {
   int idno;
   int data;
 } stack_e;
-*/
+
 typedef struct {
   char ptr[16];
   int adr;
@@ -51,7 +51,7 @@ extern int rx[4];
 extern int label;
 extern int osin;
 extern int st;
-extern int st2;
+extern int st2[100];
 extern int cal_times;
 extern int num_add;
 extern int sym_counter;
@@ -69,8 +69,8 @@ int exp_num(void);
 //void sym_func(void);
 //void ope_func(void);
 //void ident(void);
-//int push(int dt);
-//int pop(void);
+int push(int dt);
+int pop(void);
 int search(void);
 void teigi(void);
 int condition(void);
@@ -94,3 +94,4 @@ int serch_label(void);
 //数字を格納するためのアドレスを発行する関数
 int issue_addr(void);
 int store_lavel(void);
+int show_stack(int no);
