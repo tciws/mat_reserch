@@ -352,19 +352,15 @@ int factor(int t,int times){
     return temp;
     case NUMBER:
     //ロード処理
-    sig[0]=1;
-    sig[1]=0;
-    sig[2]=0;
       //数字が即値で入らない場合の処理
     if(tok.value < -32768 || 32767 < tok.value){
-      //処理を書いてないです！！
-      sig[3] =1;
-      sig[4] =1;
+      //
+      temp = num_lavel(tok.value);
+      SIGNAL(1,0,0,temp,1);
     }else{
-    sig[3]=exp_num();//後でアドレスを吐く処理に変更
-    sig[4]=3;
+    temp=exp_num();//後でアドレスを吐く処理に変更
+    SIGNAL(1,0,0,temp,3);
     }
-    OFF;
     //ストア処理
     temp=issue_addr();
     SIGNAL(2,0,0,temp,0);

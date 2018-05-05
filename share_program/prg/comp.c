@@ -50,6 +50,9 @@ void compiler(void){
       if(tok.attr == SYMBOL && tok.value == SEMICOLON){
         gsd(4);
         statement();
+        SIGNAL(12,0,0,0,0);
+        store_lavel();
+        //大きな数字を格納したラベルを表示
         if(tok.attr == SYMBOL && tok.value == PERIOD){
           fprintf(stderr,"Parsing Completed.Noerrors found.\n");
         }
