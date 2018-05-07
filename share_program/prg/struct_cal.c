@@ -8,19 +8,23 @@
 TOKEN tok;
 FILE *infile;
 FILE *outfile;
-int spt;
+int spt = -1;
 hensu ide[H];
+hensu narrow_ide[H];
 TOKEN tok;
-int sym,num;
 int add;
-int typesel;
+int narrow_addr;
 int lv;
 int sig[5];
 int rx[4];
 int label;
 int num_add = ADDBEGIN;
 int issued_labels = 0;
+int count_var = 0;
 int label_array[N] = {};
+int count_narrow_var[2] = {};
+int fanc_label = 0;
+unsigned int proc_begin = 0;
 //
 stack_e stack[STACK_MAX];
 int push(int dt){
@@ -61,21 +65,23 @@ int show_stack(int no){
     return -1;
 }
 void write_label(int tmp){
-  int sig2[5];
-  for(int i;i<5;i++){
-    sig2[i]=sig[i];
-  }
   sig[0]=10;
   sig[3]=tmp;
   OFF;
-  for(int i;i<5;i++){
-    sig[i]=sig2[i];
-  }
 }
 int search(void){
   int addrs = 0;
   //printf("add = %d\n",add);
   int j;
+  for(j = 0; j < H; j++){
+    //printf("j=%d\n",j);
+    //printf("%s,%d,%d\n",ide[j].ptr,ide[j].adr,j);
+    if(strcmp(narrow_ide[j].ptr,tok.charvalue) == 0){
+      addrs = narrow_ide[j].adr;
+      //printf("addrs=%d\n",addrs);
+      return addrs;
+    }
+  }
   for(j = 0; j < H; j++){
     //printf("j=%d\n",j);
     //printf("%s,%d,%d\n",ide[j].ptr,ide[j].adr,j);
@@ -90,10 +96,19 @@ int search(void){
   }
   return 0;
 }
+void init_narrow(void){
+  printf("Initialization narrow address...\n");
+  narrow_addr = 0;//局所変数制御用変数初期化
+  printf("Initialization narrow variable array...\n");
+  for(int i =0;i<H;i++){
+    strcpy(narrow_ide[i].ptr,"program");
+    narrow_ide[i].adr = 0;
+  }
+}
 void teigi(void){
   //gsd(-1);
   getsym();
-  int i;
+  int i,tmp;
   for(i = 0; i < H; i++){
     //printf("####%s,%d\n",ide[i].ptr,ide[i].adr);
     if(strcmp(ide[i].ptr,"program")==0){
@@ -101,7 +116,102 @@ void teigi(void){
       strcpy(ide[i].ptr,tok.charvalue);
       //ide[i].ptr=tok.charvalue;
       ide[i].adr=add;
+      count_var++;
       printf("##%s,%d\n",ide[i].ptr,ide[i].adr);
+      //printf("###%s,%d\n",ide[i+1].ptr,ide[i+1].adr);
+      break;
+    }
+  }
+  gsd(0);
+  gsd(-3);
+  if(tok.value == COMMA){
+    teigi();
+  }
+  else{
+    if(tok.attr == RWORD && tok.value == PROCEDURE){
+      proc_begin++;
+      printf("ここは関数内\n");
+      fanc_label=lavel();
+      write_label(fanc_label);
+      printf("大域変数は%d個あります\n",count_var);
+      //強制ジャンプ文
+      SIGNAL(18,0,0,0,0);
+      gsd(-1);
+      if(tok.attr == IDENTIFIER){
+        ////////////////////////////////////////////////
+        //大域変数用記号表に関数を保持
+        for(i = 0; i < H; i++){
+          //printf("####%s,%d\n",ide[i].ptr,ide[i].adr);
+          if(strcmp(ide[i].ptr,"program")==0){
+            add++;
+            strcpy(ide[i].ptr,tok.charvalue);
+            //ide[i].ptr=tok.charvalue;
+            ide[i].adr=add;
+            printf("###%s,%d\n",ide[i].ptr,ide[i].adr);
+            //printf("###%s,%d\n",ide[i+1].ptr,ide[i+1].adr);
+            break;
+          }
+        }
+        ////////////////////////////////////////////////////
+        deb(1);
+        gsd(-4);
+        if(tok.attr == SYMBOL && tok.value == LPAREN){
+        inblock();
+        gsd(-2);
+      }
+      }
+    }
+    statement();
+  }
+}
+int inblock(void){
+    //gsd(-10);
+      //引数処理をここに書く
+      printf("引数処理をここに書く\n");
+      narrow_outblock(0);
+      gsd(-11);
+      if(tok.attr == SYMBOL && tok.value == COMMA){
+        inblock();
+      }
+      else{
+        gsd(-12);
+        printf("BRをスタックに積む\n");
+        printf("BR=SPを実行");
+        //gsd(-13);
+        if(tok.attr == RWORD && tok.value == VAR){
+          //init_narrow();//局所変数用の構造体、アドレス用変数初期化
+          //count_narrow_var = 0;
+          narrow_outblock(1);
+          FLAG(-18,count_narrow_var[0]);
+          FLAG(-19,count_narrow_var[1]);
+        }
+      }
+  return 0;
+}
+void narrow_outblock(int sel){
+  //gsd(-1);
+  gsd(-20);
+  int i;
+  for(i = 0; i < H; i++){
+    //printf("####%s,%d\n",ide[i].ptr,ide[i].adr);
+    if(strcmp(narrow_ide[i].ptr,"program")==0){
+      narrow_addr++;
+      strcpy(narrow_ide[i].ptr,tok.charvalue);
+      //ide[i].ptr=tok.charvalue;
+      //ダミーアドレス
+      if(sel==0){
+        narrow_ide[i].adr=narrow_addr+200;
+        count_narrow_var[0]++;
+        printf("引数をスタックに積む\n");
+        //SIGNAL(1,0,0,narrow_ide[i].adr,0);
+      }
+      if(sel==1){
+        narrow_ide[i].adr=narrow_addr+300;
+        count_narrow_var[1]++;
+        //printf("局所変数をスタックに積む\n");
+        //SIGNAL(1,0,0,narrow_ide[i].adr,0);
+      }
+      printf("##%s,%d\n",narrow_ide[i].ptr,narrow_ide[i].adr);
       //printf("###%s,%d\n",ide[i+1].ptr,ide[i+1].adr);
       break;
     }
@@ -109,18 +219,30 @@ void teigi(void){
   //gsd(-2);
   getsym();
   if(tok.value == COMMA){
-    teigi();
+    narrow_outblock(sel );
   }
   else{
     statement();
   }
 }
+int paramlist(void){
+  com3:
+  gsd(-30);
+  //add=exp_ident();
+  cal_times=0;
+  express(2);
+  if(tok.attr == SYMBOL && tok.value == COMMA){
+  goto com3;
+  }
+  gsd(-31);
+  return 0;
+}
+
 int lavel(void){
   //ジャンプ用
   label++;
   return label;
 }
-
 int num_lavel(int deg){
   //即値代入できない場合の処理
   issued_labels++;
@@ -197,6 +319,7 @@ int out_file_func(int signal[5]){
         fprintf(outfile, "loadi  R%d,%d\n", signal[1],signal[3]);
         break;
         case 4:
+        fprintf(outfile, "load  R%d,%d(BR)\n", signal[1],signal[3]);
         break;
       }
     break;
@@ -212,6 +335,7 @@ int out_file_func(int signal[5]){
         fprintf(outfile, "store  R%d,E%d\n", signal[1],signal[3]);
         break;
         case 2:
+        fprintf(outfile, "store  R%d,%d(BR)\n", signal[1],signal[3]);
         break;
       }
     break;
@@ -235,6 +359,7 @@ int out_file_func(int signal[5]){
         fprintf(outfile, "addi  R%d,%d\n", signal[1],signal[3]);
         break;
         case 4:
+        fprintf(outfile, "add  R%d,%d(BR)\n", signal[1],signal[3]);
         break;
       }
     break;
@@ -258,6 +383,7 @@ int out_file_func(int signal[5]){
         fprintf(outfile, "subi  R%d,%d\n", signal[1],signal[3]);
         break;
         case 4:
+        fprintf(outfile, "sub  R%d,%d(BR)\n", signal[1],signal[3]);
         break;
       }
     break;
@@ -281,6 +407,7 @@ int out_file_func(int signal[5]){
         fprintf(outfile, "muli  R%d,%d\n", signal[1],signal[3]);
         break;
         case 4:
+        fprintf(outfile, "mul  R%d,%d(BR)\n", signal[1],signal[3]);
         break;
       }
     break;
@@ -304,6 +431,7 @@ int out_file_func(int signal[5]){
         fprintf(outfile, "divi  R%d,%d\n", signal[1],signal[3]);
         break;
         case 4:
+        fprintf(outfile, "div  R%d,%d(BR)\n", signal[1],signal[3]);
         break;
       }
     break;
@@ -327,6 +455,7 @@ int out_file_func(int signal[5]){
         fprintf(outfile, "cmpi  R%d,%d\n", signal[1],signal[3]);
         break;
         case 4:
+        fprintf(outfile, "cmp  R%d,%d(BR)\n", signal[1],signal[3]);
         break;
       }
     break;
@@ -389,6 +518,24 @@ int out_file_func(int signal[5]){
     break;
     case 12:
     fprintf(outfile, "halt\n");
+    break;
+    case 13:
+    fprintf(outfile, "push  R%d\n",signal[1]);
+    break;
+    case 14:
+    fprintf(outfile, "pop  R%d\n",signal[1]);
+    break;
+    case 15:
+    fprintf(outfile, "call  L%d\n",signal[3]);
+    break;
+    case 16:
+    fprintf(outfile, "return\n");
+    break;
+    case 17:
+    fprintf(outfile, "main:\n");
+    break;
+    case 18:
+    fprintf(outfile, "jmp main:\n");
     break;
   }
   return 0;

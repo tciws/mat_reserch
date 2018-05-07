@@ -108,11 +108,10 @@ int express(int t){
     SIGNAL(1,0,0,tmp,0);
     //tmp = serch_reg();
     //FLAG(57,tmp);
-    //count_narrow_var[0]++;
+    count_narrow_var[0]++;
     printf("引数をスタックに積む\n");
     //スタックにpush
     SIGNAL(13,0,0,0,0);
-    printf("hentai\n");
     spt = -1;
     return tmp;
     }

@@ -14,16 +14,13 @@ FILE *outfile;
 //rx is register
 int rx[4];
 int sig[5];
-int spt = -1;
 //tmp用変数
-int osin;
-int sym,num;
 int add = 0;
-int typesel = -1;
 int lv = 0;
 int st = 0;
 int label = 0;
 int caltimes = 0;
+int count_narrow_var[2];
 /*+++++++
 即値0
 レジスタ1
@@ -87,6 +84,7 @@ void init_addr(void){
   }
   printf("Initialization signal array...\n");
   init_sig();
+  init_narrow();
 }
 void error(char *s){
   fprintf(stderr,"%s\n",s);
@@ -112,23 +110,62 @@ void statement(void){
         //deb(11);
         add = 0;
       }
+      else{
+        //printf("引数分SPを足す\n");
+        printf("Callする\n");
+        SIGNAL(15,0,0,fanc_label,0);
+        paramlist();
+        //SIGNAL(15,0,0,0,0);
+        printf("引数を%d個削除\n",count_narrow_var[0]);
+        SIGNAL(4,4,0,count_narrow_var[0],3);
+        /*
+        for(int i=0;i<=count_narrow_var[0];i++){
+          SIGNAL(14,0,0,0,0);
+        }
+        */
+        //count_narrow_var[0] = 0;
+      }
         break;
     //指導書公文図中begin,if,whileなど
     case RWORD:
       switch(tok.value){
         case BEGIN:
+        if(proc_begin == 0){
+          printf("mainラベル\n");
+          SIGNAL(17,0,0,0,0);
+        }
           lv++;
           semi:
           gsd(12);
           statement();
           //gsd(17);
           if(tok.value == SEMICOLON){
+            //printf("ここにreturn文\n");
             goto semi;
           }
+
           if(tok.value == END){
             lv--;
           }
+          if(tok.value == PERIOD){
+            return;
+          }
+          //printf("ここにreturn文\n");
+          if(tok.value == END){
           gsd(13);
+          if(tok.value == PERIOD){
+            return;
+          }else if(tok.value == SEMICOLON){
+            proc_begin--;
+            printf("ここにreturn文!!\n");
+            SIGNAL(16,0,0,0,0);
+            printf("局所変数%d個削除\n",count_narrow_var[1]);
+            SIGNAL(4,4,0,count_narrow_var[1],3);
+            count_narrow_var[1] = 0;
+            printf("BR=SPをする\n");
+          }
+          }
+          /*
           if(tok.value == END){
             lv--;
             gsd(14);
@@ -136,14 +173,10 @@ void statement(void){
           if(tok.value == PERIOD){
             return;
           }
-          */
           if(tok.value == SEMICOLON){
+            printf("ここにreturn文!!\n");
             goto semi;
           }
-          }
-          /*
-          if(tok.value == PERIOD){
-            return;
           }
           */
         break;
@@ -165,17 +198,28 @@ void statement(void){
         init_sig();
         com:
         gsd(16);
-        sig[3] = exp_ident();
-        sig[0]=1;
-        sig[1]=0;
-        sig[4]=0;
-        OFF;
-        sig[0]=9;
-        sig[1]=0;
-        sig[4]=1;
-        OFF;
-        sig[4]=3;
-        OFF;
+        temp = exp_ident();
+        //局所変数専用線
+        if(temp > 300){
+        //ロード
+          temp = temp - 300;
+          temp = temp - count_narrow_var[1];
+          //オフセットの値を出力
+          SIGNAL(1,0,0,temp,4);
+          //引数専用線
+        }else if(temp > 200 && temp < 300){
+          temp = temp - 200;
+          temp = temp - count_narrow_var[0];
+          //オフセットの値を出力
+          SIGNAL(1,0,0,temp,4);
+        }
+        else{
+          SIGNAL(1,0,0,temp,0);
+        }
+        //ライト
+        SIGNAL(9,0,0,0,1);
+        SIGNAL(9,0,0,0,3);
+
           //statement();
           //
           //temp=exp_ident();
@@ -187,53 +231,6 @@ void statement(void){
         break;
         }
         break;
-        /*
-        case NUMBER:
-        //変数か数字の分岐
-        switch(tok.attr){
-          case NUMBER:
-            sig[1]=exp_num();
-              break;
-          case IDENTIFIER:
-            sig[1]=exp_ident();
-              break;
-          default:
-              printf("error1\n");
-              break;
-        }
-        gsd(5);
-        switch (tok.value) {
-          case PLUS:
-          break;
-          case MINUS:
-          break;
-          case TIMES:
-          break;
-          case DIV:
-          break;
-          default:
-          return;
-        }
-        gsd(6);
-        switch(tok.attr){
-          case NUMBER:
-            sig[2]=exp_num();
-              break;
-          case IDENTIFIER:
-            sig[2]=exp_ident();
-            //レジスタ同士の演算の場合
-            sig[0] = sig[0]+5;
-              break;
-          default:
-              printf("error2\n");
-              break;
-        }
-        OFF;
-        break;
-    default:
-      printf("error3\n");
-        break;
-        */
   }
   return;
 }
