@@ -64,9 +64,10 @@ int show_stack(int no){
     return -1;
 }
 void write_label(int tmp){
-  sig[0]=10;
-  sig[3]=tmp;
-  OFF;
+    sig[0]=10;
+    sig[1] = 0;
+    sig[3]=tmp;
+    OFF;
 }
 int search(void){
   int addrs = 0;
@@ -81,9 +82,10 @@ int search(void){
     //printf("%s,%d,%d\n",ide[j].ptr,ide[j].adr,j);
     if(strcmp(narrow_ide[j].ptr,tok.charvalue) == 0){
       addrs = narrow_ide[j].adr;
-      //printf("addrs=%d\n",addrs);
+      printf("addrs=%d\n",addrs);
       return addrs;
     }
+  }
     for(j = 0; j < H; j++){
       //printf("j=%d\n",j);
       //printf("%s,%d,%d\n",ide[j].ptr,ide[j].adr,j);
@@ -97,9 +99,8 @@ int search(void){
       }
     }
   ///////////////////////////////////////////////////
-  }
   return 0;
-}
+  }
 void init_narrow(void){
   printf("Initialization narrow address...\n");
   narrow_addr = 0;//局所変数制御用変数初期化
@@ -126,12 +127,12 @@ void teigi(void){
       break;
     }
   }
-  gsd(-3);
+  gsd(101);
   if(tok.value == COMMA){
     teigi();
   }
   else{
-      gsd(0);
+      gsd(102);
     if(tok.attr == RWORD && tok.value == PROCEDURE){
       proc_begin++;
       printf("ここは関数内\n");
@@ -140,9 +141,10 @@ void teigi(void){
       SIGNAL(3,4,0,count_var,3);
       //強制ジャンプ文
       SIGNAL(18,0,0,0,0);
-      fanc_label=lavel();
-      write_label(fanc_label);
-      gsd(-1);
+      //fanc_label=lavel();
+      //write_label(fanc_label);
+      SIGNAL(20,0,0,0,0);
+      gsd(103);
       if(tok.attr == IDENTIFIER){
         ////////////////////////////////////////////////
         //大域変数用記号表に関数を保持
@@ -160,10 +162,10 @@ void teigi(void){
         }
         ////////////////////////////////////////////////////
         deb(1);
-        gsd(-4);
+        gsd(104);
         if(tok.attr == SYMBOL && tok.value == LPAREN){
         inblock();
-        gsd(-2);
+        gsd(105);
       }
       }
     }
@@ -175,12 +177,12 @@ int inblock(void){
       //引数処理をここに書く
       printf("引数処理をここに書く\n");
       narrow_outblock(0);
-      gsd(-11);
+      gsd(106);
       if(tok.attr == SYMBOL && tok.value == COMMA){
         inblock();
       }
       else{
-        gsd(-12);
+        gsd(107);
         ///////////////////////////////////////
         //関数開始時の処理
         //呼びだされた側の処理１
@@ -209,7 +211,7 @@ int inblock(void){
 }
 void narrow_outblock(int sel){
   //gsd(-1);
-  gsd(-20);
+  gsd(108);
   int i;
   for(i = 0; i < H; i++){
     //printf("####%s,%d\n",ide[i].ptr,ide[i].adr);
@@ -245,14 +247,14 @@ void narrow_outblock(int sel){
 }
 int paramlist(void){
   com3:
-  gsd(-30);
+  gsd(109);
   //add=exp_ident();
   cal_times=0;
   express(2);
   if(tok.attr == SYMBOL && tok.value == COMMA){
   goto com3;
   }
-  gsd(-31);
+  gsd(110);
   return 0;
 }
 int lavel(void){
@@ -558,6 +560,12 @@ int out_file_func(int signal[5]){
     break;
     case 18:
     fprintf(outfile, "jmp main\n");
+    break;
+    case 19:
+    fprintf(outfile, "call  proc\n");
+    break;
+    case 20:
+    fprintf(outfile, "proc:\n");
     break;
   }
   return 0;

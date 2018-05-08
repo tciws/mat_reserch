@@ -10,12 +10,12 @@
 #define gs getsym();
 #define OFF out_file_func(sig);
 #define deb(f)  printf("##\nDEB_LOG\ntok.velue=%d,tok.charvalue=%s\nFLAG=%d\n##\n",tok.value,tok.charvalue,f);
-#define gsd(f) do{getsym();printf("tok.attr=%d,tok.velue=%d,tok.charvalue=%s\ndebug_flag=%2d\n",tok.attr,tok.value,tok.charvalue,f);}while(0);
+#define gsd(f) do{getsym();printf("tok.attr=%d,tok.velue=%d,tok.charvalue=%s\ndebug_flag=%3d\n",tok.attr,tok.value,tok.charvalue,f);}while(0);
 #define deba do{printf("+++++++++++++++++++++\n");printf("0->compiler\n");printf("1->statement\n");printf("2->express\n");printf("3->if_func\n");printf("4->while_func\n");printf("5->condition\n");printf("+++++++++++++++++++++\n");}while(0);
 #define FLAG(t,f) printf("\n+++++++\nflag[%d] = %d\n+++++++\n\n",t,f);
 #define SHOW_ARRAY(flag,array,max) do{printf("###############\n");for(int i=0;i<max;i++){printf("array%d[%d]=%d\n",flag,i,array[i]);}printf("###############\n");}while(0);
 #define INPUT_LOCAL(num) do{LOCAL[LOCAL_TOP]=num;LOCAL_TOP++;}while(0);
-#define SIGNAL(a,b,c,d,e) do{sig[0]=a;sig[1]=b;sig[2]=c;sig[3]=d;sig[4]=e;OFF;}while(0);
+#define SIGNAL(a,b,c,d,e) do{sig[0]=a;sig[1]=b;sig[2]=c;sig[3]=d;sig[4]=e;OFF;printf("書き込みました%d,%d,%d,%d,%d\n",sig[0],sig[1],sig[2],sig[3],sig[4]);}while(0);
 typedef struct {
   int num[N];
   int head;
@@ -49,6 +49,7 @@ extern int count_narrow_var[2];
 //局所変数のアドレス用大域変数、呼び出す前に初期化をする必要がある。
 extern int narrow_addr;
 extern int lv;
+extern int lv2;
 extern int sig[SIG_MAX];
 extern int rx[4];
 extern int label;

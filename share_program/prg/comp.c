@@ -40,14 +40,14 @@ void compiler(void){
   init_addr();
   init_getsym();
   deba;
-  gsd(1);
+  gsd(001);
   if(tok.attr == RWORD && tok.value == PROGRAM){
-    gsd(2);
+    gsd(002);
     if(tok.attr == IDENTIFIER){
-      gsd(3);
+      gsd(003);
       //statement();
       if(tok.attr == SYMBOL && tok.value == SEMICOLON){
-        gsd(4);
+        gsd(004);
         statement();
         SIGNAL(12,0,0,0,0);
         store_lavel();
@@ -102,9 +102,9 @@ void statement(void){
     add=exp_ident();
     //printf("address = %d\n",add);
     //BECCOME出す用getsym
-      gsd(10);
+      gsd(010);
       if(tok.value==BECOMES){
-        gsd(11);
+        gsd(011);
         cal_times=0;
         //st2[100]={};
         st = 0;
@@ -119,7 +119,7 @@ void statement(void){
         //呼び出した側の処理
         paramlist();
         printf("Callする\n");
-        SIGNAL(15,0,0,fanc_label,0);
+        SIGNAL(19,0,0,0,0);
         //SIGNAL(15,0,0,0,0);
         ///////////////////////////////////
         ///////////////////////////////////
@@ -146,7 +146,7 @@ void statement(void){
         }
           lv++;
           semi:
-          gsd(12);
+          gsd(012);
           statement();
           //gsd(17);
           if(tok.value == SEMICOLON){
@@ -156,7 +156,7 @@ void statement(void){
 
           if(tok.value == END){
             FLAG(1919,lv);
-            if(jump_label != 0 && jump_label_count == 0){
+            if(jump_label != 0 && proc_begin != 0){
             write_label(jump_label);
             jump_label = 0;
             }
@@ -167,7 +167,7 @@ void statement(void){
           }
           //printf("ここにreturn文\n");
           if(tok.value == END){
-          gsd(13);
+          gsd(013);
           if(tok.value == PERIOD){
           return;
           }else if(tok.value == SEMICOLON){
@@ -208,7 +208,7 @@ void statement(void){
         case VAR:
         //変数定義
           teigi();
-          gsd(15);
+          gsd(015);
           statement();
         break;
         case IF:
@@ -222,7 +222,7 @@ void statement(void){
         case WRITE:
         init_sig();
         com:
-        gsd(16);
+        gsd(016);
         temp = exp_ident();
         //局所変数専用線
         if(temp > 300){
@@ -248,7 +248,7 @@ void statement(void){
           //
           //temp=exp_ident();
           //deb(1);
-          gsd(17);
+          gsd(017);
           if(tok.attr == SYMBOL && tok.value == COMMA){
             SIGNAL(9,0,0,0,4);
             goto com;
@@ -264,7 +264,7 @@ void statement(void){
 //条件分処理用関数
 void if_func(void){
   int temp,temp2;
-  gsd(30);
+  gsd(030);
   condition();
   //sd(31);
   //THEN
@@ -273,13 +273,13 @@ void if_func(void){
   temp = lavel();
   temp2=lavel();
   jump_label = temp2;
-  printf("temp2=%d\n",temp2);
+  //printf("temp2=%d\n",temp2);
   //condition関数内でsig[1]は定義済み
   sig[0]=8;
   sig[3]=temp;
   OFF;
   if(tok.value == THEN){
-    gsd(31);
+    gsd(031);
     statement();
     //gsd(32);
     //強制ジャンプ
@@ -287,17 +287,21 @@ void if_func(void){
     //elseの処理
     write_label(temp);
     if(tok.value == ELSE){
-      gsd(33);
+      gsd(033);
+      temp = proc_begin;
+      FLAG(10101010,proc_begin);
       statement();
     }
-    write_label(temp2);
-    jump_label_count++;
+    if(jump_label != 0 && proc_begin == 0){
+    write_label(jump_label);
+    jump_label = 0;
+    }
   }
 }
 //繰り返し文用関数
 void while_func(void){
   int temp,temp2;
-  gsd(40);
+  gsd(040);
   temp=lavel();
   temp2=lavel();
   write_label(temp);
@@ -308,7 +312,7 @@ void while_func(void){
   OFF;
   //gsd(41);
   if(tok.value == DO){
-    gsd(42);
+    gsd(042);
     statement();
     //deb(1);
     //強制ジャンプ
@@ -355,7 +359,7 @@ int condition(void){
     tsig=3;
     break;
   }
-  gsd(50);
+  gsd(050);
   cal_times=0;
   //st2[100]={};
   st = 0;
