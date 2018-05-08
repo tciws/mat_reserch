@@ -102,7 +102,7 @@ int express(int t){
     }
     //引数時の専用線
     if(tmp != -1 && cal_times == 1 && t == 2){
-    printf("ここに最終変数のアドレスに代入\n");
+    //printf("ここに最終変数のアドレスに代入\n");
     tmp = pop();
     //FLAG(56,tmp);
     SIGNAL(1,0,0,tmp,0);
@@ -112,7 +112,6 @@ int express(int t){
     printf("引数をスタックに積む\n");
     //スタックにpush
     SIGNAL(13,0,0,0,0);
-    printf("hentai\n");
     spt = -1;
     return tmp;
     }
@@ -178,7 +177,23 @@ int factor(int t,int times){
     case IDENTIFIER:
     //ロード処理
     temp=exp_ident();
-    SIGNAL(1,0,0,temp,0);
+    ///////////////////////////////
+    //局所変数の処理
+    if(temp > 300){
+      temp = temp - 300 - count_narrow_var[0];
+      FLAG(1919810,temp);
+      //オフセットの処理を書く
+      SIGNAL(1,0,0,temp,4);
+    }else if(temp>200 && temp<300){
+      temp = temp -200;
+      temp = count_narrow_var[0] - temp + 2;
+      FLAG(114514,-temp);
+      //オフセットの処理を書く
+      SIGNAL(1,0,0,-temp,4);
+    }else{
+      SIGNAL(1,0,0,temp,0);//大域変数
+    }
+    ///////////////////////////////
     //ストア処理
     temp=issue_addr();
     push(temp);

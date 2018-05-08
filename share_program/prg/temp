@@ -1,17 +1,358 @@
-loadi  R0,0
-store  R0,1
-loadi  R0,0
-store  R0,2
-load  R0,1
-loadi  R0,10
-cmpr  R0,R0
-load  R0,2
-addi  R0,1
-store  R0,2
-load  R0,1
-addi  R0,1
-store  R0,1
-load  R0,2
-writed  R0
-loadi  R0,10
-writec  R0
+Input output filename >>Initialization Resister array...
+Initialization variable array...
+Initialization signal array...
+Initialization narrow address...
+Initialization narrow variable array...
++++++++++++++++++++++
+0->compiler
+1->statement
+2->express
+3->if_func
+4->while_func
+5->condition
++++++++++++++++++++++
+tok.attr=3,tok.velue=267,tok.charvalue=program
+debug_flag= 1
+tok.attr=1,tok.velue=267,tok.charvalue=hanoi
+debug_flag= 2
+tok.attr=4,tok.velue=59,tok.charvalue=;
+debug_flag= 3
+tok.attr=3,tok.velue=269,tok.charvalue=var
+debug_flag= 4
+##n,1
+tok.attr=4,tok.velue=59,tok.charvalue=;
+debug_flag= 0
+tok.attr=3,tok.velue=266,tok.charvalue=procedure
+debug_flag=-3
+ここは関数内
+大域変数は1個あります
+tok.attr=1,tok.velue=266,tok.charvalue=hanoi
+debug_flag=-1
+###hanoi,2
+##
+DEB_LOG
+tok.velue=266,tok.charvalue=hanoi
+FLAG=1
+##
+tok.attr=4,tok.velue=40,tok.charvalue=(
+debug_flag=-4
+引数処理をここに書く
+tok.attr=1,tok.velue=40,tok.charvalue=a
+debug_flag=-20
+引数をスタックに積む
+##a,201
+tok.attr=1,tok.velue=44,tok.charvalue=b
+debug_flag=-20
+引数をスタックに積む
+##b,202
+tok.attr=1,tok.velue=44,tok.charvalue=c
+debug_flag=-20
+引数をスタックに積む
+##c,203
+tok.attr=1,tok.velue=44,tok.charvalue=n
+debug_flag=-20
+引数をスタックに積む
+##n,204
+tok.attr=4,tok.velue=59,tok.charvalue=;
+debug_flag=-11
+tok.attr=3,tok.velue=269,tok.charvalue=var
+debug_flag=-12
+BRをスタックに積む
+BR=SPを実行
+tok.attr=1,tok.velue=269,tok.charvalue=i
+debug_flag=-20
+##i,305
+局所変数領域を割り当てる
+tok.attr=3,tok.velue=265,tok.charvalue=if
+debug_flag=-2
+tok.attr=1,tok.velue=265,tok.charvalue=n
+debug_flag=30
+
++++++++
+flag[114514] = -2
++++++++
+
+10000
+#################
+tok.attr=4,tok.velue=61,tok.charvalue==
+debug_flag=70
+ここに最終変数のアドレスに代入
+10000
+++++++++++++++++
+temp=3
+tok.attr=2,tok.velue=1,tok.charvalue=1
+debug_flag=50
+10001
+#################
+tok.attr=3,tok.velue=268,tok.charvalue=then
+debug_flag=71
+ここに最終変数のアドレスに代入
+10001
+++++++++++++++++
+temp=2
+temp2=3
+tok.attr=3,tok.velue=272,tok.charvalue=write
+debug_flag=31
+tok.attr=1,tok.velue=272,tok.charvalue=a
+debug_flag=16
+tok.attr=4,tok.velue=44,tok.charvalue=,
+debug_flag=17
+tok.attr=1,tok.velue=44,tok.charvalue=b
+debug_flag=16
+tok.attr=3,tok.velue=263,tok.charvalue=else
+debug_flag=17
+tok.attr=3,tok.velue=260,tok.charvalue=begin
+debug_flag=33
+tok.attr=1,tok.velue=260,tok.charvalue=hanoi
+debug_flag=12
+error.
+tok.attr=4,tok.velue=40,tok.charvalue=(
+debug_flag=10
+tok.attr=1,tok.velue=40,tok.charvalue=a
+debug_flag=-30
+
++++++++
+flag[114514] = -5
++++++++
+
+10002
+#################
+tok.attr=4,tok.velue=44,tok.charvalue=,
+debug_flag=70
+10002
+++++++++++++++++
+引数をスタックに積む
+tok.attr=1,tok.velue=44,tok.charvalue=c
+debug_flag=-30
+
++++++++
+flag[114514] = -3
++++++++
+
+10003
+#################
+tok.attr=4,tok.velue=44,tok.charvalue=,
+debug_flag=70
+10003
+++++++++++++++++
+引数をスタックに積む
+tok.attr=1,tok.velue=44,tok.charvalue=b
+debug_flag=-30
+
++++++++
+flag[114514] = -4
++++++++
+
+10004
+#################
+tok.attr=4,tok.velue=44,tok.charvalue=,
+debug_flag=70
+10004
+++++++++++++++++
+引数をスタックに積む
+tok.attr=1,tok.velue=44,tok.charvalue=n
+debug_flag=-30
+
++++++++
+flag[114514] = -2
++++++++
+
+10005
+#################
+tok.attr=4,tok.velue=45,tok.charvalue=-
+debug_flag=70
+10005
+4
+#################
+tok.attr=2,tok.velue=1,tok.charvalue=1
+debug_flag=51
+10005
+4
+10006
+#################
+tok.attr=4,tok.velue=41,tok.charvalue=)
+debug_flag=71
+ここに途中結果をメモリに書き込み3
+10005
+4
+10006
+++++++++++++++++
+10005
+4
+++++++++++++++++
+10005
+++++++++++++++++
+10007
+#################
+10007
+++++++++++++++++
+引数をスタックに積む
+tok.attr=4,tok.velue=59,tok.charvalue=;
+debug_flag=-31
+Callする
+引数を4個削除
+tok.attr=3,tok.velue=272,tok.charvalue=write
+debug_flag=12
+tok.attr=1,tok.velue=272,tok.charvalue=a
+debug_flag=16
+tok.attr=4,tok.velue=44,tok.charvalue=,
+debug_flag=17
+tok.attr=1,tok.velue=44,tok.charvalue=b
+debug_flag=16
+tok.attr=4,tok.velue=59,tok.charvalue=;
+debug_flag=17
+tok.attr=1,tok.velue=59,tok.charvalue=hanoi
+debug_flag=12
+error.
+tok.attr=4,tok.velue=40,tok.charvalue=(
+debug_flag=10
+tok.attr=1,tok.velue=40,tok.charvalue=c
+debug_flag=-30
+
++++++++
+flag[114514] = -3
++++++++
+
+10008
+#################
+tok.attr=4,tok.velue=44,tok.charvalue=,
+debug_flag=70
+10008
+++++++++++++++++
+引数をスタックに積む
+tok.attr=1,tok.velue=44,tok.charvalue=b
+debug_flag=-30
+
++++++++
+flag[114514] = -4
++++++++
+
+10009
+#################
+tok.attr=4,tok.velue=44,tok.charvalue=,
+debug_flag=70
+10009
+++++++++++++++++
+引数をスタックに積む
+tok.attr=1,tok.velue=44,tok.charvalue=a
+debug_flag=-30
+
++++++++
+flag[114514] = -5
++++++++
+
+10010
+#################
+tok.attr=4,tok.velue=44,tok.charvalue=,
+debug_flag=70
+10010
+++++++++++++++++
+引数をスタックに積む
+tok.attr=1,tok.velue=44,tok.charvalue=n
+debug_flag=-30
+
++++++++
+flag[114514] = -2
++++++++
+
+10011
+#################
+tok.attr=4,tok.velue=45,tok.charvalue=-
+debug_flag=70
+10011
+4
+#################
+tok.attr=2,tok.velue=1,tok.charvalue=1
+debug_flag=51
+10011
+4
+10012
+#################
+tok.attr=4,tok.velue=41,tok.charvalue=)
+debug_flag=71
+ここに途中結果をメモリに書き込み3
+10011
+4
+10012
+++++++++++++++++
+10011
+4
+++++++++++++++++
+10011
+++++++++++++++++
+10013
+#################
+10013
+++++++++++++++++
+引数をスタックに積む
+tok.attr=3,tok.velue=264,tok.charvalue=end
+debug_flag=-31
+Callする
+引数を4個削除
+tok.attr=4,tok.velue=59,tok.charvalue=;
+debug_flag=13
+局所変数1個削除
+BR=SPをする
+ここにreturn文!!
+tok.attr=3,tok.velue=260,tok.charvalue=begin
+debug_flag=15
+mainラベル
+tok.attr=1,tok.velue=260,tok.charvalue=n
+debug_flag=12
+tok.attr=4,tok.velue=256,tok.charvalue=:=
+debug_flag=10
+tok.attr=2,tok.velue=5,tok.charvalue=5
+debug_flag=11
+10014
+#################
+tok.attr=4,tok.velue=59,tok.charvalue=;
+debug_flag=71
+ここに最終変数のアドレスに代入
+10014
+++++++++++++++++
+tok.attr=1,tok.velue=59,tok.charvalue=hanoi
+debug_flag=12
+tok.attr=4,tok.velue=40,tok.charvalue=(
+debug_flag=10
+tok.attr=2,tok.velue=1,tok.charvalue=1
+debug_flag=-30
+10015
+#################
+tok.attr=4,tok.velue=44,tok.charvalue=,
+debug_flag=71
+10015
+++++++++++++++++
+引数をスタックに積む
+tok.attr=2,tok.velue=2,tok.charvalue=2
+debug_flag=-30
+10016
+#################
+tok.attr=4,tok.velue=44,tok.charvalue=,
+debug_flag=71
+10016
+++++++++++++++++
+引数をスタックに積む
+tok.attr=2,tok.velue=3,tok.charvalue=3
+debug_flag=-30
+10017
+#################
+tok.attr=4,tok.velue=44,tok.charvalue=,
+debug_flag=71
+10017
+++++++++++++++++
+引数をスタックに積む
+tok.attr=1,tok.velue=44,tok.charvalue=n
+debug_flag=-30
+10018
+#################
+tok.attr=4,tok.velue=41,tok.charvalue=)
+debug_flag=70
+10018
+++++++++++++++++
+引数をスタックに積む
+tok.attr=3,tok.velue=264,tok.charvalue=end
+debug_flag=-31
+Callする
+引数を4個削除
+tok.attr=4,tok.velue=46,tok.charvalue=.
+debug_flag=13

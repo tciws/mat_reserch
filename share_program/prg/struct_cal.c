@@ -42,7 +42,6 @@ int push(int dt){
   }
   return 0;
 }
-
 int pop(void){
   int dt;
   for(int i = 0; i <=spt; i++){
@@ -73,6 +72,10 @@ int search(void){
   int addrs = 0;
   //printf("add = %d\n",add);
   int j;
+  ///////////////////////////////////////////////////
+  //main文では大域変数の変数表のみを見る
+  //nqueenで書き換えが生じる可能性
+  //局所変数用変数表
   for(j = 0; j < H; j++){
     //printf("j=%d\n",j);
     //printf("%s,%d,%d\n",ide[j].ptr,ide[j].adr,j);
@@ -81,18 +84,19 @@ int search(void){
       //printf("addrs=%d\n",addrs);
       return addrs;
     }
-  }
-  for(j = 0; j < H; j++){
-    //printf("j=%d\n",j);
-    //printf("%s,%d,%d\n",ide[j].ptr,ide[j].adr,j);
-    if(strcmp(ide[j].ptr,tok.charvalue) == 0){
-      addrs = ide[j].adr;
-      //printf("addrs=%d\n",addrs);
-      return addrs;
+    for(j = 0; j < H; j++){
+      //printf("j=%d\n",j);
+      //printf("%s,%d,%d\n",ide[j].ptr,ide[j].adr,j);
+      if(strcmp(ide[j].ptr,tok.charvalue) == 0){
+        addrs = ide[j].adr;
+        //printf("addrs=%d\n",addrs);
+        return addrs;
+      }
+      if(j==H-1){
+        printf("error.\n");
+      }
     }
-    if(j==H-1){
-      printf("error.\n");
-    }
+  ///////////////////////////////////////////////////
   }
   return 0;
 }
@@ -115,27 +119,29 @@ void teigi(void){
       add++;
       strcpy(ide[i].ptr,tok.charvalue);
       //ide[i].ptr=tok.charvalue;
-      ide[i].adr=add;
+      ide[i].adr=add+100;
       count_var++;
       printf("##%s,%d\n",ide[i].ptr,ide[i].adr);
       //printf("###%s,%d\n",ide[i+1].ptr,ide[i+1].adr);
       break;
     }
   }
-  gsd(0);
   gsd(-3);
   if(tok.value == COMMA){
     teigi();
   }
   else{
+      gsd(0);
     if(tok.attr == RWORD && tok.value == PROCEDURE){
       proc_begin++;
       printf("ここは関数内\n");
-      fanc_label=lavel();
-      write_label(fanc_label);
+      //
       printf("大域変数は%d個あります\n",count_var);
+      SIGNAL(3,4,0,count_var,3);
       //強制ジャンプ文
       SIGNAL(18,0,0,0,0);
+      fanc_label=lavel();
+      write_label(fanc_label);
       gsd(-1);
       if(tok.attr == IDENTIFIER){
         ////////////////////////////////////////////////
@@ -175,15 +181,28 @@ int inblock(void){
       }
       else{
         gsd(-12);
+        ///////////////////////////////////////
+        //関数開始時の処理
+        //呼びだされた側の処理１
         printf("BRをスタックに積む\n");
-        printf("BR=SPを実行");
+        SIGNAL(13,5,0,0,0);
+        printf("BR=SPを実行\n");
+        //printf("BR=SP\n");
+        SIGNAL(1,5,4,0,2);
         //gsd(-13);
+        ////////////////////////////////////////
         if(tok.attr == RWORD && tok.value == VAR){
           //init_narrow();//局所変数用の構造体、アドレス用変数初期化
           //count_narrow_var = 0;
           narrow_outblock(1);
-          FLAG(-18,count_narrow_var[0]);
-          FLAG(-19,count_narrow_var[1]);
+          //FLAG(-18,count_narrow_var[0]);
+          //FLAG(-19,count_narrow_var[1]);
+          /////////////////////////////////////
+          //関数開始時の処理
+          //呼びだされた側の処理２
+          printf("局所変数領域を割り当てる\n");
+          SIGNAL(3,4,0,count_narrow_var[1],3);
+          //////////////////////////////////////
         }
       }
   return 0;
@@ -209,7 +228,6 @@ void narrow_outblock(int sel){
         narrow_ide[i].adr=narrow_addr+300;
         count_narrow_var[1]++;
         //printf("局所変数をスタックに積む\n");
-        //SIGNAL(1,0,0,narrow_ide[i].adr,0);
       }
       printf("##%s,%d\n",narrow_ide[i].ptr,narrow_ide[i].adr);
       //printf("###%s,%d\n",ide[i+1].ptr,ide[i+1].adr);
@@ -237,7 +255,6 @@ int paramlist(void){
   gsd(-31);
   return 0;
 }
-
 int lavel(void){
   //ジャンプ用
   label++;
@@ -507,6 +524,11 @@ int out_file_func(int signal[5]){
       fprintf(outfile,"loadi  R0,10\n");
       fprintf(outfile, "writec  R0\n");
       break;
+      case 4:
+      //文字列
+      fprintf(outfile,"loadi  R0,9\n");
+      fprintf(outfile, "writec  R0\n");
+      break;
     }
     break;
     case 10:
@@ -535,7 +557,7 @@ int out_file_func(int signal[5]){
     fprintf(outfile, "main:\n");
     break;
     case 18:
-    fprintf(outfile, "jmp main:\n");
+    fprintf(outfile, "jmp main\n");
     break;
   }
   return 0;

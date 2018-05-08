@@ -63,6 +63,8 @@ extern int issued_labels;
 extern int label_array[N];
 extern unsigned int proc_begin;
 extern int fanc_label;
+extern int jump_label;
+extern unsigned int jump_label_count;
 void error(char *s);
 void statement(void);
 void ident_func(void);

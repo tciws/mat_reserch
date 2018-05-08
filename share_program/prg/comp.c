@@ -21,6 +21,8 @@ int st = 0;
 int label = 0;
 int caltimes = 0;
 int count_narrow_var[2];
+int jump_label;
+unsigned int jump_label_count = 0;
 /*+++++++
 即値0
 レジスタ1
@@ -112,12 +114,20 @@ void statement(void){
       }
       else{
         //printf("引数分SPを足す\n");
+        ///////////////////////////////////
+        //関数の開始時の処理
+        //呼び出した側の処理
+        paramlist();
         printf("Callする\n");
         SIGNAL(15,0,0,fanc_label,0);
-        paramlist();
         //SIGNAL(15,0,0,0,0);
+        ///////////////////////////////////
+        ///////////////////////////////////
+        //関数の終了時の処理
+        //呼び出した側の処理
         printf("引数を%d個削除\n",count_narrow_var[0]);
         SIGNAL(4,4,0,count_narrow_var[0],3);
+        ////////////////////////////////////
         /*
         for(int i=0;i<=count_narrow_var[0];i++){
           SIGNAL(14,0,0,0,0);
@@ -130,7 +140,7 @@ void statement(void){
     case RWORD:
       switch(tok.value){
         case BEGIN:
-        if(proc_begin == 0){
+        if(proc_begin == 0 && lv == 0){
           printf("mainラベル\n");
           SIGNAL(17,0,0,0,0);
         }
@@ -145,6 +155,11 @@ void statement(void){
           }
 
           if(tok.value == END){
+            FLAG(1919,lv);
+            if(jump_label != 0 && jump_label_count == 0){
+            write_label(jump_label);
+            jump_label = 0;
+            }
             lv--;
           }
           if(tok.value == PERIOD){
@@ -154,15 +169,25 @@ void statement(void){
           if(tok.value == END){
           gsd(13);
           if(tok.value == PERIOD){
-            return;
+          return;
           }else if(tok.value == SEMICOLON){
             proc_begin--;
+            ////////////////////////////////////////////
+            //関数終了時の処理
+            //呼びだされた側の処理
+            if(lv == 0){
+            printf("BR=SPをする\n");
+            SIGNAL(1,4,5,0,2);
+            printf("局所変数%d個削除\n",count_narrow_var[1]);
+            SIGNAL(14,5,0,0,0);
             printf("ここにreturn文!!\n");
             SIGNAL(16,0,0,0,0);
-            printf("局所変数%d個削除\n",count_narrow_var[1]);
-            SIGNAL(4,4,0,count_narrow_var[1],3);
+            //局所変数の個数を管理している変数を初期化
+            //局所変数記号表を初期化
+            init_narrow();
             count_narrow_var[1] = 0;
-            printf("BR=SPをする\n");
+            }
+            ////////////////////////////////////////////
           }
           }
           /*
@@ -203,22 +228,21 @@ void statement(void){
         if(temp > 300){
         //ロード
           temp = temp - 300;
-          temp = temp - count_narrow_var[1];
+          temp = temp - count_narrow_var[0];
           //オフセットの値を出力
           SIGNAL(1,0,0,temp,4);
           //引数専用線
         }else if(temp > 200 && temp < 300){
           temp = temp - 200;
-          temp = temp - count_narrow_var[0];
+          temp = count_narrow_var[0]-temp+2;
           //オフセットの値を出力
-          SIGNAL(1,0,0,temp,4);
+          SIGNAL(1,0,0,-temp,4);
         }
         else{
           SIGNAL(1,0,0,temp,0);
         }
         //ライト
         SIGNAL(9,0,0,0,1);
-        SIGNAL(9,0,0,0,3);
 
           //statement();
           //
@@ -226,7 +250,10 @@ void statement(void){
           //deb(1);
           gsd(17);
           if(tok.attr == SYMBOL && tok.value == COMMA){
+            SIGNAL(9,0,0,0,4);
             goto com;
+          }else{
+            SIGNAL(9,0,0,0,3);
           }
         break;
         }
@@ -245,6 +272,8 @@ void if_func(void){
   //thenの処理
   temp = lavel();
   temp2=lavel();
+  jump_label = temp2;
+  printf("temp2=%d\n",temp2);
   //condition関数内でsig[1]は定義済み
   sig[0]=8;
   sig[3]=temp;
@@ -254,10 +283,7 @@ void if_func(void){
     statement();
     //gsd(32);
     //強制ジャンプ
-    sig[0]=8;
-    sig[1]=0;
-    sig[3]=temp2;
-    OFF;
+    SIGNAL(8,0,0,temp2,0);
     //elseの処理
     write_label(temp);
     if(tok.value == ELSE){
@@ -265,6 +291,7 @@ void if_func(void){
       statement();
     }
     write_label(temp2);
+    jump_label_count++;
   }
 }
 //繰り返し文用関数
