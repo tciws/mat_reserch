@@ -1,6 +1,6 @@
 addi  R4,1
 jmp main
-proc:
+L1:
 push  R5
 loadr  R5,R4
 addi  R4,1
@@ -13,6 +13,7 @@ store  R0,10001
 load  R0,10001
 loadr  R2,R0
 cmpr  R3,R2
+jnz  L2
 load  R0,-5(BR)
 writed  R0
 loadi  R0,9
@@ -21,8 +22,8 @@ load  R0,-4(BR)
 writed  R0
 loadi  R0,10
 writec  R0
-jmp  L2
-L1:
+jmp  L3
+L2:
 load  R0,-5(BR)
 store  R0,10002
 load  R0,10002
@@ -45,7 +46,7 @@ subr  R0,R1
 store  R0,10007
 load  R0,10007
 push  R0
-proc:
+call  L1
 subi  R4,4
 load  R0,-5(BR)
 writed  R0
@@ -77,9 +78,9 @@ subr  R0,R1
 store  R0,10013
 load  R0,10013
 push  R0
-proc:
+call  L1
 subi  R4,4
-L2:
+L3:
 loadr  R4,R5
 pop  R5
 return
@@ -104,6 +105,6 @@ load  R0,101
 store  R0,10018
 load  R0,10018
 push  R0
-proc:
+call  L1
 subi  R4,4
 halt

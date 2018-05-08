@@ -1,1 +1,2 @@
 export PATH="$PATH://home/ciws/github/mat_reserch/share_program/prg/bin"
+export PATH="$PATH://home/kawaguti/github/mat_reserch/share_program/prg/bin"
