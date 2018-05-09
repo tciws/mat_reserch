@@ -23,6 +23,7 @@ int caltimes = 0;
 int count_narrow_var[2];
 int jump_label;
 unsigned int jump_label_count = 0;
+unsigned int proc_end = 0;
 /*+++++++
 即値0
 レジスタ1
@@ -140,6 +141,25 @@ void statement(void){
     case RWORD:
       switch(tok.value){
         case BEGIN:
+        ////////////////////////////////////////////
+        //関数終了時の処理
+        //呼びだされた側の処理
+        FLAG(111111,proc_begin);
+        FLAG(111111,proc_end);
+        if(proc_begin != 0 && proc_end == 3){
+          printf("BR=SPをする\n");
+          SIGNAL(1,4,5,0,2);
+          printf("局所変数%d個削除\n",count_narrow_var[1]);
+          SIGNAL(14,5,0,0,0);
+          printf("ここにreturn文!!\n");
+          SIGNAL(16,0,0,0,0);
+          //局所変数の個数を管理している変数を初期化
+          //局所変数記号表を初期化
+          init_narrow();
+          count_narrow_var[1] = 0;
+          proc_begin--;
+        }
+        ////////////////////////////////////////////
         if(proc_begin == 0 && lv == 0){
           printf("mainラベル\n");
           SIGNAL(17,0,0,0,0);
@@ -156,10 +176,11 @@ void statement(void){
 
           if(tok.value == END){
             FLAG(1919,lv);
-            if(jump_label != 0 && proc_begin != 0){
+            /*if(jump_label != 0 && proc_begin != 0){
             write_label(jump_label);
             jump_label = 0;
             }
+            */
             lv--;
           }
           if(tok.value == PERIOD){
@@ -171,23 +192,7 @@ void statement(void){
           if(tok.value == PERIOD){
           return;
           }else if(tok.value == SEMICOLON){
-            proc_begin--;
-            ////////////////////////////////////////////
-            //関数終了時の処理
-            //呼びだされた側の処理
-            if(lv == 0){
-            printf("BR=SPをする\n");
-            SIGNAL(1,4,5,0,2);
-            printf("局所変数%d個削除\n",count_narrow_var[1]);
-            SIGNAL(14,5,0,0,0);
-            printf("ここにreturn文!!\n");
-            SIGNAL(16,0,0,0,0);
-            //局所変数の個数を管理している変数を初期化
-            //局所変数記号表を初期化
-            init_narrow();
-            count_narrow_var[1] = 0;
-            }
-            ////////////////////////////////////////////
+            proc_end++;
           }
           }
           /*
@@ -263,7 +268,9 @@ void statement(void){
 }
 //条件分処理用関数
 void if_func(void){
-  int temp,temp2;
+  printf("----------------------------------------------------\n");
+  int temp,temp2,tmp_sig,cont;
+  cont = 0;
   gsd(030);
   condition();
   //sd(31);
@@ -271,57 +278,74 @@ void if_func(void){
   //gsd(32);
   //thenの処理
   temp = lavel();
-  temp2=lavel();
-  jump_label = temp2;
+  //temp2=lavel();
+  //jump_label = temp+1;
   //printf("temp2=%d\n",temp2);
-  //condition関数内でsig[1]は定義済み
-  sig[0]=8;
-  sig[3]=temp;
-  OFF;
+  //condition関数内でsig[4]は定義済み
+  tmp_sig = sig[4];
+  SIGNAL(8,0,0,temp,tmp_sig);
+  //sig[0]=8;
+  //sig[3]=temp;
+  //OFF;
   if(tok.value == THEN){
     gsd(031);
     statement();
     //gsd(32);
     //強制ジャンプ
-    SIGNAL(8,0,0,temp2,0);
     //elseの処理
-    write_label(temp);
+    ///////////////////////////////////
+    //SIGNAL(8,0,0,temp+1,0);
+    //write_label(temp);
+    ///////////////////////////////////
     if(tok.value == ELSE){
+      /////////////////////////////////
+      //piの時コメントアウト
+      SIGNAL(8,0,0,temp+1,0);
+      write_label(temp);
+      /////////////////////////////////
       gsd(033);
-      temp = proc_begin;
+      //temp = proc_begin;
       FLAG(10101010,proc_begin);
       statement();
     }
-    if(jump_label != 0 && proc_begin == 0){
-    write_label(jump_label);
-    jump_label = 0;
+    else{
+      write_label(temp);//piの時コメントアウト
+      cont++;
     }
+    if(cont==0){//piの時コメントアウト
+    write_label(temp+1);
+    }//piの時コメントアウト
+    //if(jump_label != 0 && proc_begin == 0){
+    //jump_label = 0;
+    //}
+    printf("++++++++++++++++++++++++++++++++++++++++++++++++\n");
   }
 }
 //繰り返し文用関数
 void while_func(void){
-  int temp,temp2;
+  printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
+  int temp,temp2,tmp_sig;
   gsd(040);
   temp=lavel();
-  temp2=lavel();
+  //temp2=lavel();
   write_label(temp);
   condition();
-  //condition関数内でsig[1]は定義済み
-  sig[0]=8;
-  sig[3]=temp2;
-  OFF;
+  //condition関数内でsig[4]は定義済み
+  tmp_sig = sig[4];
+  SIGNAL(8,0,0,temp+1,tmp_sig);
+  //sig[0]=8;
+  //sig[3]=temp+1 ;
+  //OFF;
   //gsd(41);
   if(tok.value == DO){
     gsd(042);
     statement();
     //deb(1);
     //強制ジャンプ
-    sig[0]=8;
-    sig[1]=0;
-    sig[3]=temp;
-    OFF;
-    write_label(temp2);
+    SIGNAL(8,0,0,temp,0);
+    write_label(temp+1);
   }
+    printf("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n");
 }
 int condition(void){
   int temp,tsig;

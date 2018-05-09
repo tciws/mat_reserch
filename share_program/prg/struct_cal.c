@@ -34,22 +34,26 @@ int push(int dt){
   spt++;
   stack[spt].idno = spt;
   stack[spt].data = dt;
+  /*
   for(int i = 0; i <=spt; i++){
     printf("%d\n",stack[i].data);
     if(i == spt){
       printf("#################\n");
     }
   }
+  */
   return 0;
 }
 int pop(void){
   int dt;
+  /*
   for(int i = 0; i <=spt; i++){
     printf("%d\n",stack[i].data);
     if(i == spt){
       printf("++++++++++++++++\n");
     }
   }
+  */
   if(spt < 0){
     return -1;
   }
@@ -64,10 +68,13 @@ int show_stack(int no){
     return -1;
 }
 void write_label(int tmp){
+  /*
     sig[0]=10;
     sig[1] = 0;
     sig[3]=tmp;
     OFF;
+    */
+    SIGNAL(10,0,0,tmp,0);
 }
 int search(void){
   int addrs = 0;
@@ -259,8 +266,10 @@ int paramlist(void){
 }
 int lavel(void){
   //ジャンプ用
-  label++;
-  return label;
+  int tmp;
+  tmp = label;
+  label+=2;
+  return tmp;
 }
 int num_lavel(int deg){
   //即値代入できない場合の処理
