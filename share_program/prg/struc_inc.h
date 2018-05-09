@@ -10,7 +10,7 @@
 #define gs getsym();
 #define OFF out_file_func(sig);
 #define deb(f)  printf("##\nDEB_LOG\ntok.velue=%d,tok.charvalue=%s\nFLAG=%d\n##\n",tok.value,tok.charvalue,f);
-#define gsd(f) do{getsym();printf("tok.attr=%d,tok.velue=%d,tok.charvalue=%s\ndebug_flag=%3d\n",tok.attr,tok.value,tok.charvalue,f);}while(0);
+#define gsd(f) do{getsym();printf("\n===================\ntok.charvalue=%s\ndebug_flag=%3d\n===================\n",tok.charvalue,f);}while(0);
 #define deba do{printf("+++++++++++++++++++++\n");printf("0->compiler\n");printf("1->statement\n");printf("2->express\n");printf("3->if_func\n");printf("4->while_func\n");printf("5->condition\n");printf("+++++++++++++++++++++\n");}while(0);
 #define FLAG(t,f) printf("\n+++++++\nflag[%d] = %d\n+++++++\n\n",t,f);
 #define SHOW_ARRAY(flag,array,max) do{printf("###############\n");for(int i=0;i<max;i++){printf("array%d[%d]=%d\n",flag,i,array[i]);}printf("###############\n");}while(0);
@@ -66,6 +66,7 @@ extern unsigned int proc_begin;
 extern int fanc_label;
 extern int jump_label;
 extern unsigned int jump_label_count;
+extern unsigned int proc_end;
 void error(char *s);
 void statement(void);
 void ident_func(void);

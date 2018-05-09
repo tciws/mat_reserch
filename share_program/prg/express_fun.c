@@ -197,13 +197,13 @@ int factor(int t,int times){
     //局所変数の処理
     if(temp > 300){
       temp = temp - 300 - count_narrow_var[0];
-      FLAG(1919810,temp);
+      //FLAG(1919810,temp);
       //オフセットの処理を書く
       SIGNAL(1,0,0,temp,4);
     }else if(temp>200 && temp<300){
       temp = temp -200;
       temp = count_narrow_var[0] - temp + 2;
-      FLAG(114514,-temp);
+      //FLAG(114514,-temp);
       //オフセットの処理を書く
       SIGNAL(1,0,0,-temp,4);
     }else{
