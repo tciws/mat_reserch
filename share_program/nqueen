@@ -1,0 +1,165 @@
+addi   sp,2
+jmp   main
+func:
+push   r5
+loadr   r5,r4
+addi   sp,7
+loadi   r1,1
+store   r1,1(BR)
+L0:
+load   r3,1(BR)
+load   r0,-2(BR)
+cmpr   r3,r0
+jgt   L1
+load   r1,-4(BR)
+store   r1,5(BR)
+loadi   r1,0
+store   r1,6(BR)
+loadi   r0,1
+load   r1,-3(BR)
+subr   r1,r0
+store   r1,2(BR)
+loadi   r1,0
+store   r1,7(BR)
+L2:
+load   r3,2(BR)
+loadi   r0,0
+cmpr   r3,r0
+jle   L3
+loadi   r0,10
+load   r1,5(BR)
+divr   r1,r0
+store   r1,6(BR)
+loadi   r0,10
+load   r1,6(BR)
+mulr   r1,r0
+store   r1,6(BR)
+load   r0,6(BR)
+load   r1,5(BR)
+subr   r1,r0
+store   r1,4(BR)
+load   r3,4(BR)
+load   r0,1(BR)
+cmpr   r3,r0
+jnz   L4
+loadi   r1,1
+store   r1,7(BR)
+jmp   L5
+L4:
+load   r3,4(BR)
+load   r0,2(BR)
+load   r1,-3(BR)
+subr   r1,r0
+store   r1,1000
+load   r0,1000
+load   r1,1(BR)
+addr   r1,r0
+store   r1,1001
+load   r0,1001
+cmpr   r3,r0
+jnz   L6
+loadi   r1,1
+store   r1,7(BR)
+jmp   L7
+L6:
+load   r3,4(BR)
+load   r0,2(BR)
+load   r1,-3(BR)
+subr   r1,r0
+store   r1,1002
+load   r0,1002
+load   r1,1(BR)
+subr   r1,r0
+store   r1,1003
+load   r0,1003
+cmpr   r3,r0
+jnz   L8
+loadi   r1,1
+store   r1,7(BR)
+L8:
+L7:
+L5:
+loadi   r0,10
+load   r1,5(BR)
+divr   r1,r0
+store   r1,5(BR)
+loadi   r0,1
+load   r1,2(BR)
+subr   r1,r0
+store   r1,1004
+load   r1,1004
+store   r1,2(BR)
+jmp   L2
+L3:
+load   r3,7(BR)
+loadi   r0,0
+cmpr   r3,r0
+jnz   L10
+loadi   r0,10
+load   r1,-4(BR)
+mulr   r1,r0
+store   r1,1005
+load   r0,1(BR)
+addr   r1,r0
+store   r1,3(BR)
+load   r3,-3(BR)
+load   r0,-2(BR)
+cmpr   r3,r0
+jnz   L12
+load   r0,3(BR)
+writed   r0
+loadi   r1 ,' '
+writec   r1
+loadi   r1,'\n'
+writec   r1
+loadi   r0,1
+load   r1,1
+addr   r1,r0
+store   r1,1006
+load   r1,1006
+store   r1,1
+jmp   L13
+L12:
+load    r0,3(BR)
+push   r0
+load   r1,-3(BR)
+loadi   r0,1
+addr   r1,r0
+push   r1
+load    r0,-2(BR)
+push   r0
+call   func
+subi   sp,3
+L13:
+L10:
+loadi   r0,1
+load   r1,1(BR)
+addr   r1,r0
+store   r1,1007
+load   r1,1007
+store   r1,1(BR)
+jmp   L0
+L1:
+loadr   r4,r5
+pop   r5
+return
+main:
+loadi   r1,8
+store   r1,0
+loadi   r1,0
+store   r1,1
+loadi   r0,0
+push   r0
+loadi   r0,1
+push   r0
+load   r0,0
+push   r0
+call   func
+subi   sp,3
+load   r0,1
+writed   r0
+loadi   r1 ,' '
+writec   r1
+loadi   r1,'\n'
+writec   r1
+halt

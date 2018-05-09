@@ -84,23 +84,7 @@ int express(int t){
     //FLAG(54,tmp);
     //FLAG(55,add);
     SIGNAL(1,0,0,tmp,0);
-    ////////////////////////////////////////////
-    if(add > 300){
-      add = add - 300 - count_narrow_var[0];
-      //FLAG(1919810,temp);
-      //オフセットの処理を書く
-      SIGNAL(2,0,0,add,2);
-    }else if(add>200 && add<300){
-      add = add -200;
-      add = count_narrow_var[0] - add + 2;
-      //FLAG(114514,-add);
-      //オフセットの処理を書く
-      SIGNAL(2,0,0,-add,2);
-    }else{
-      SIGNAL(2,0,0,add,0);//大域変数
-    }
-    ///////////////////////////////////////////
-    //SIGNAL(2,0,0,add,0);
+    SIGNAL(2,0,0,add,0);
     spt = -1;
     return 0;
     }
@@ -118,13 +102,13 @@ int express(int t){
     }
     //引数時の専用線
     if(tmp != -1 && cal_times == 1 && t == 2){
-    //printf("ここに最終変数のアドレスに代入\n");
+    printf("ここに最終変数のアドレスに代入\n");
     tmp = pop();
     //FLAG(56,tmp);
     SIGNAL(1,0,0,tmp,0);
     //tmp = serch_reg();
     //FLAG(57,tmp);
-    //count_narrow_var[0]++;
+    count_narrow_var[0]++;
     printf("引数をスタックに積む\n");
     //スタックにpush
     SIGNAL(13,0,0,0,0);
@@ -150,13 +134,13 @@ int term(int t,int times){
   switch (tok.value) {
     case TIMES:
     push(5);
-    gsd(201);
+    gsd(60);
     cont2++;
     goto fac;
     break;
     case DIV:
     push(6);
-    gsd(202);
+    gsd(61);
     cont2++;
     goto fac;
     break;
@@ -193,28 +177,12 @@ int factor(int t,int times){
     case IDENTIFIER:
     //ロード処理
     temp=exp_ident();
-    ///////////////////////////////
-    //局所変数の処理
-    if(temp > 300){
-      temp = temp - 300 - count_narrow_var[0];
-      //FLAG(1919810,temp);
-      //オフセットの処理を書く
-      SIGNAL(1,0,0,temp,4);
-    }else if(temp>200 && temp<300){
-      temp = temp -200;
-      temp = count_narrow_var[0] - temp + 2;
-      //FLAG(114514,-temp);
-      //オフセットの処理を書く
-      SIGNAL(1,0,0,-temp,4);
-    }else{
-      SIGNAL(1,0,0,temp,0);//大域変数
-    }
-    ///////////////////////////////
+    SIGNAL(1,0,0,temp,0);
     //ストア処理
     temp=issue_addr();
     push(temp);
     SIGNAL(2,0,0,temp,0);
-    gsd(203);
+    gsd(70);
     //次の演算子を覗き見
     /*
     if(tok.attr == SYMBOL && tok.value == PLUS || tok.value == MINUS || tok.value == TIMES || tok.value == DIV){
@@ -253,7 +221,7 @@ int factor(int t,int times){
     temp=issue_addr();
     push(temp);
     SIGNAL(2,0,0,temp,0);
-    gsd(204);
+    gsd(71);
     //次の演算子を覗き見
     /*
     if(tok.attr == SYMBOL && tok.value == PLUS || tok.value == MINUS || tok.value == TIMES || tok.value == DIV){
@@ -282,7 +250,7 @@ int factor(int t,int times){
   //カッコの処理
   {
     if(tok.attr == SYMBOL && tok.value == LPAREN){
-      gsd(205);
+      gsd(73);
       sym_counter = 0;
       push(10);
       express(t);
@@ -291,7 +259,7 @@ int factor(int t,int times){
       push(kakko_result);
       cal_times--;
       //eb(44);
-      gsd(206);
+      gsd(74);
       return kakko_result;
     }
     }
