@@ -5,27 +5,17 @@ push  R5
 loadr  R5,R4
 addi  R4,7
 loadi  R0,1
-store  R0,10000
-load  R0,10000
 store  R0,1(BR)
 L0:
 load  R0,1(BR)
-store  R0,10001
-load  R0,10001
 loadr  R3,R0
 load  R0,-2(BR)
-store  R0,10002
-load  R0,10002
 loadr  R2,R0
 cmpr  R3,R2
 jgt  L1
 load  R0,-4(BR)
-store  R0,10003
-load  R0,10003
 store  R0,5(BR)
 loadi  R0,0
-store  R0,10004
-load  R0,10004
 store  R0,6(BR)
 load  R0,-3(BR)
 store  R0,10005
@@ -34,21 +24,13 @@ store  R0,10006
 load  R0,10005
 load  R1,10006
 subr  R0,R1
-store  R0,10007
-load  R0,10007
 store  R0,2(BR)
 loadi  R0,0
-store  R0,10008
-load  R0,10008
 store  R0,7(BR)
 L2:
 load  R0,2(BR)
-store  R0,10009
-load  R0,10009
 loadr  R3,R0
 loadi  R0,0
-store  R0,10010
-load  R0,10010
 loadr  R2,R0
 cmpr  R3,R2
 jle  L3
@@ -59,18 +41,12 @@ store  R0,10012
 load  R0,10011
 load  R1,10012
 divr  R0,R1
-store  R0,10013
-load  R0,10013
-store  R0,6(BR)
-load  R0,6(BR)
 store  R0,10014
 loadi  R0,10
 store  R0,10015
 load  R0,10014
 load  R1,10015
 mulr  R0,R1
-store  R0,10016
-load  R0,10016
 store  R0,6(BR)
 load  R0,5(BR)
 store  R0,10017
@@ -79,28 +55,16 @@ store  R0,10018
 load  R0,10017
 load  R1,10018
 subr  R0,R1
-store  R0,10019
-load  R0,10019
-store  R0,4(BR)
-load  R0,4(BR)
-store  R0,10020
-load  R0,10020
 loadr  R3,R0
 load  R0,1(BR)
-store  R0,10021
-load  R0,10021
 loadr  R2,R0
 cmpr  R3,R2
 jnz  L4
 loadi  R0,1
-store  R0,10022
-load  R0,10022
 store  R0,7(BR)
 jmp  L5
 L4:
 load  R0,4(BR)
-store  R0,10023
-load  R0,10023
 loadr  R3,R0
 load  R0,1(BR)
 store  R0,10024
@@ -115,20 +79,14 @@ store  R0,10027
 load  R0,10024
 load  R1,10027
 addr  R0,R1
-store  R0,10028
-load  R0,10028
 loadr  R2,R0
 cmpr  R3,R2
 jnz  L6
 loadi  R0,1
-store  R0,10029
-load  R0,10029
 store  R0,7(BR)
 jmp  L7
 L6:
 load  R0,4(BR)
-store  R0,10030
-load  R0,10030
 loadr  R3,R0
 load  R0,1(BR)
 store  R0,10031
@@ -143,14 +101,10 @@ store  R0,10034
 load  R0,10031
 load  R1,10034
 subr  R0,R1
-store  R0,10035
-load  R0,10035
 loadr  R2,R0
 cmpr  R3,R2
 jnz  L8
 loadi  R0,1
-store  R0,10036
-load  R0,10036
 store  R0,7(BR)
 L8:
 L7:
@@ -162,8 +116,6 @@ store  R0,10038
 load  R0,10037
 load  R1,10038
 divr  R0,R1
-store  R0,10039
-load  R0,10039
 store  R0,5(BR)
 load  R0,2(BR)
 store  R0,10040
@@ -172,18 +124,12 @@ store  R0,10041
 load  R0,10040
 load  R1,10041
 subr  R0,R1
-store  R0,10042
-load  R0,10042
 store  R0,2(BR)
 jmp  L2
 L3:
 load  R0,7(BR)
-store  R0,10043
-load  R0,10043
 loadr  R3,R0
 loadi  R0,0
-store  R0,10044
-load  R0,10044
 loadr  R2,R0
 cmpr  R3,R2
 jnz  L10
@@ -200,16 +146,10 @@ store  R0,10048
 load  R0,10047
 load  R1,10048
 addr  R0,R1
-store  R0,10049
-load  R0,10049
 store  R0,3(BR)
 load  R0,-3(BR)
-store  R0,10050
-load  R0,10050
 loadr  R3,R0
 load  R0,-2(BR)
-store  R0,10051
-load  R0,10051
 loadr  R2,R0
 cmpr  R3,R2
 jnz  L12
@@ -224,14 +164,10 @@ store  R0,10053
 load  R0,10052
 load  R1,10053
 addr  R0,R1
-store  R0,10054
-load  R0,10054
 store  R0,102
 jmp  L13
 L12:
 load  R0,3(BR)
-store  R0,10055
-load  R0,10055
 push  R0
 load  R0,-3(BR)
 store  R0,10056
@@ -240,12 +176,8 @@ store  R0,10057
 load  R0,10056
 load  R1,10057
 addr  R0,R1
-store  R0,10058
-load  R0,10058
 push  R0
 load  R0,-2(BR)
-store  R0,10059
-load  R0,10059
 push  R0
 call  proc
 subi  R4,3
@@ -258,8 +190,6 @@ store  R0,10061
 load  R0,10060
 load  R1,10061
 addr  R0,R1
-store  R0,10062
-load  R0,10062
 store  R0,1(BR)
 jmp  L0
 L1:
@@ -268,24 +198,14 @@ pop  R5
 return
 main:
 loadi  R0,8
-store  R0,10063
-load  R0,10063
 store  R0,101
 loadi  R0,0
-store  R0,10064
-load  R0,10064
 store  R0,102
 loadi  R0,0
-store  R0,10065
-load  R0,10065
 push  R0
 loadi  R0,1
-store  R0,10066
-load  R0,10066
 push  R0
 load  R0,101
-store  R0,10067
-load  R0,10067
 push  R0
 call  proc
 subi  R4,3
