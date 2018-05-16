@@ -27,11 +27,10 @@ push  R0
 load  R0,-4(BR)
 push  R0
 load  R0,-2(BR)
-store  R0,10005
+loadr  R1,R0
 loadi  R0,1
 store  R0,10006
 load  R0,10005
-load  R1,10006
 subr  R0,R1
 push  R0
 call  L1
@@ -51,11 +50,10 @@ push  R0
 load  R0,-5(BR)
 push  R0
 load  R0,-2(BR)
-store  R0,10011
+loadr  R1,R0
 loadi  R0,1
 store  R0,10012
 load  R0,10011
-load  R1,10012
 subr  R0,R1
 push  R0
 call  L1
@@ -68,6 +66,8 @@ main:
 loadi  R0,5
 store  R0,101
 loadi  R0,1
+store  R0,10015
+load  R0,10015
 push  R0
 loadi  R0,2
 push  R0
