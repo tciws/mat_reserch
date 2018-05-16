@@ -1,15 +1,25 @@
 loadi  R0,0
 store  R0,1
 loadi  R0,0
+store  R0,10001
+load  R0,10001
 store  R0,6
 loadi  R0,3827
+store  R0,10002
+load  R0,10002
 store  R0,2
 loadi  R0,8358
+store  R0,10003
+load  R0,10003
 store  R0,3
 loadi  R0,3797
+store  R0,10004
+load  R0,10004
 store  R0,4
 L1:
 load  R0,1
+store  R0,10005
+load  R0,10005
 loadr  R3,R0
 loadi  R0,1000
 loadr  R2,R0
@@ -114,6 +124,8 @@ store  R0,10041
 load  R0,10032
 load  R1,10041
 subr  R0,R1
+store  R0,10042
+load  R0,10042
 store  R0,10043
 loadi  R0,10
 store  R0,10044
@@ -146,6 +158,8 @@ store  R0,10054
 load  R0,10051
 load  R1,10054
 addr  R0,R1
+store  R0,10055
+load  R0,10055
 loadr  R3,R0
 load  R0,E5
 loadr  R2,R0
@@ -169,6 +183,8 @@ store  R0,10061
 load  R0,10060
 load  R1,10061
 addr  R0,R1
+store  R0,10062
+load  R0,10062
 store  R0,1
 jmp  L1
 L2:
@@ -179,6 +195,8 @@ store  R0,10064
 load  R0,10063
 load  R1,10064
 mulr  R0,R1
+store  R0,10065
+load  R0,10065
 writed  R0
 loadi  R0,10
 writec  R0
