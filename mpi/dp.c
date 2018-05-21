@@ -14,7 +14,7 @@ int main(void)
   int ans;
   fp = fopen( fname, "rb" );
   if( fp == NULL ){
-    printf( "%sファイルが開けません¥n", fname );
+    printf( "%sファイルが開けません\n", fname );
     return -1;
   }
   fread(tmp,sizeof(int),2,fp); //ファイル先頭から，荷物の個数とナップサックのサイズを取得
