@@ -14,7 +14,7 @@ int main(void)
   int ans;
   fp = fopen( fname, "rb" );
   if( fp == NULL ){
-    printf( "%sファイルが開けません¥n", fname );
+    printf( "%sファイルが開けません\n", fname );
     return -1;
   }
   fread(tmp,sizeof(int),2,fp); //ファイル先頭から，荷物の個数とナップサックのサイズを取得
@@ -125,7 +125,9 @@ int dynamicprg(int nap_size,int obj_max,strobj *object){
   }
   return dp[obj_max-1][nap_size];
   */
-  int dp[nap_size+1];
+  //int dp[nap_size+1];
+  int *dp;
+  dp = (int *)calloc(nap_size+1,sizeof(int));
   int i,w;
   for (w = 0; w <= nap_size; w++) {
     if(w<object[0].weight){
