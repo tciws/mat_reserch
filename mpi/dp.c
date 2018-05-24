@@ -2,7 +2,8 @@
 #include <stdlib.h>
 #include <time.h>
 #include "mpi.h"
-int main(void){
+int main(void)
+{
   clock_t start,end;
   FILE *fp;
   char *fname = FILENAME;
@@ -22,28 +23,24 @@ int main(void){
   nap_size = tmp[0];
   table_size = tmp[1];
   for(i = 0 ;i < table_size; i++){
-    fread( tmp, sizeof( int ),2, fp );
-    object[i].weight = tmp[0];
-    object[i].value = tmp[1];
-    object[i].value_par_weight = (float)tmp[1]/tmp[0];
-    //printf("%d , %d\n",object[i].weight,object[i].value);
+  fread( tmp, sizeof( int ),2, fp );
+  object[i].weight = tmp[0];
+  object[i].value = tmp[1];
+  printf("%d , %d\n",object[i].weight,object[i].value);
   }
   start = clock();
   qsort(object, table_size, sizeof(*object), comp_value);
   qsort(object, table_size, sizeof(*object), comp_weight);
+
   table_size = datadel(nap_size,table_size,object);
+  printf("削減後のデータサイズは%dです\n",table_size);
   delobject = (strobj *)realloc(object,table_size*sizeof(strobj));
   if( delobject == NULL ) {
     printf( "メモリ確保エラー(2)\n" );
   }
   object = delobject;
-  //動的計画法
   ans = dynamicprg(nap_size,table_size,object);
   end = clock();
-  //分枝限定法
-  qsort(object, table_size, sizeof(*object), comp_value_par_weight);
-  greedy(nap_size,object);
-  bab(nap_size,object);
   printf("解答は%d\n",ans);
   printf("%.6f秒かかりました\n",(double)(end-start)/CLOCKS_PER_SEC);
   free(object);
@@ -57,10 +54,6 @@ int comp_weight(const void *a, const void *b) {
 //-------------------------------------------------------------
 int comp_value(const void *a, const void *b) {
   return ((strobj *)b)->value - ((strobj *)a)->value;
-}
-//--------------------------------------------------------------
-int comp_value_par_weight(const void *a, const void *b) {
-  return ((strobj *)b)->value_par_weight - ((strobj *)a)->value_par_weight;
 }
 //-------------------------------------------------------------
 int datadel(int nap_size,int obj_max,strobj *object){
@@ -93,7 +86,7 @@ int datadel(int nap_size,int obj_max,strobj *object){
       object[table_count].weight = object[i].weight;
       object[table_count].value = object[i].value;
       table_count++;
-      //printf("%lf\n",object[i].value_par_weight);
+      //printf("%d , %d\n",object[i].weight,object[i].value);
   }else{
     weight_tmp = object[i].weight;
     value_tmp = object[i].value;
@@ -171,5 +164,4 @@ int max(int temp1, int temp2){
   if(temp2>temp1){
     return temp2;
   }
-  return 0;
 }
