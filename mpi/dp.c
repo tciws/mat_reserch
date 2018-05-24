@@ -33,7 +33,7 @@ int main(void)
   qsort(object, table_size, sizeof(*object), comp_weight);
 
   table_size = datadel(nap_size,table_size,object);
-  printf("削減後のデータサイズは%dです\n",table_size);
+  //printf("削減後のデータサイズは%dです\n",table_size);
   delobject = (strobj *)realloc(object,table_size*sizeof(strobj));
   if( delobject == NULL ) {
     printf( "メモリ確保エラー(2)\n" );
@@ -41,6 +41,7 @@ int main(void)
   object = delobject;
   ans = dynamicprg(nap_size,table_size,object);
   end = clock();
+  bab(nap_size,object,table_size,0);
   printf("解答は%d\n",ans);
   printf("%.6f秒かかりました\n",(double)(end-start)/CLOCKS_PER_SEC);
   free(object);
