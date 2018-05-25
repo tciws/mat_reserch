@@ -41,8 +41,10 @@ int main(void)
   object = delobject;
   ans = dynamicprg(nap_size,table_size,object);
   end = clock();
-  bab(nap_size,object,table_size,0);
-  printf("解答は%d\n",ans);
+  printf("動的計画法の解答は%d\n",ans);
+  printf("%.6f秒かかりました\n",(double)(end-start)/CLOCKS_PER_SEC);
+  ans = bab(nap_size,object,table_size,0);
+  printf("分枝限定法の解答は%d\n",ans);
   printf("%.6f秒かかりました\n",(double)(end-start)/CLOCKS_PER_SEC);
   free(object);
   fclose( fp );

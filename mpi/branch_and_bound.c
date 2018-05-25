@@ -4,31 +4,32 @@ int interim_solution = 0;
 int recursion_rank = 0;
 int bab(int nap_size,strobj *object,int table_size,int index){
   //分枝限定法のソースを書く
-  recursion_rank++;
-  printf("recursion_rank=%d\n",recursion_rank);
+  //recursion_rank++;
+  //printf("recursion_rank=%d\n",recursion_rank);
   int in,out;
   //out = bab_recursion(0,nap_size,object,table_size,0);
   //in =bab_recursion(1,nap_size,object,table_size,0);
   //入れない時の処理
-  if(recursion_rank >= 30){
-    return 0;
-  }
   //printf("table_size = %d\n",table_size);
   if(table_size == index){
-    printf("お前はすべてを呼んでしまった\n");
     out = 0;
   }else{
-    printf("nap_size = %d,index = %d\n",nap_size,index);
+    //printf("nap_size = %d,index = %d\n",nap_size,index);
     out = bab(nap_size,object,table_size,index+1);
   }
   //入れる時の処理
-  if(nap_size < object[index].weight){
+  if(table_size == index){
     in = out;
-  }else{
-    in = bab((nap_size-object[index].weight),object,table_size,index+1)+object[index].value;
   }
-  recursion_rank--;
-  printf("in=%d,out=%d\n",in,out);
+  else{
+    if(nap_size < object[index].weight){
+      in = out;
+    }else{
+      in = bab((nap_size-object[index].weight),object,table_size,index+1)+object[index].value;
+    }
+  }
+  //recursion_rank--;
+  //printf("in=%d,out=%d\n",in,out);
   return ((in >= out)?  in : out);
 }
 int greedy(int nap_size,strobj *object){
