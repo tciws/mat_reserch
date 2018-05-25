@@ -26,6 +26,7 @@ int main(void)
   fread( tmp, sizeof( int ),2, fp );
   object[i].weight = tmp[0];
   object[i].value = tmp[1];
+  object[i].value_par_weight = (float)tmp[1]/tmp[0];
   printf("%d , %d\n",object[i].weight,object[i].value);
   }
   start = clock();

@@ -3,6 +3,7 @@
 typedef struct {
   int weight;
   int value;
+  float value_par_weight;
 }strobj;
 int comp_weight(const void *a, const void *b);
 int comp_value(const void *a, const void *b);
