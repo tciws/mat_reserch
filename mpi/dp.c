@@ -27,7 +27,7 @@ int main(void)
   object[i].weight = tmp[0];
   object[i].value = tmp[1];
   object[i].value_par_weight = (float)tmp[1]/tmp[0];
-  printf("%d , %d\n",object[i].weight,object[i].value);
+  //printf("%d , %d\n",object[i].weight,object[i].value);
   }
   start = clock();
   qsort(object, table_size, sizeof(*object), comp_value);
@@ -44,9 +44,13 @@ int main(void)
   end = clock();
   printf("動的計画法の解答は%d\n",ans);
   printf("%.6f秒かかりました\n",(double)(end-start)/CLOCKS_PER_SEC);
+  /*
+  start = clock();
   ans = bab(nap_size,object,table_size,0);
-  printf("分枝限定法の解答は%d\n",ans);
-  printf("%.6f秒かかりました\n",(double)(end-start)/CLOCKS_PER_SEC);
+  end = clock();
+  */
+  //printf("分枝限定法の解答は%d\n",ans);
+  //printf("%.6f秒かかりました\n",(double)(end-start)/CLOCKS_PER_SEC);
   free(object);
   fclose( fp );
   return 0;
@@ -58,6 +62,9 @@ int comp_weight(const void *a, const void *b) {
 //-------------------------------------------------------------
 int comp_value(const void *a, const void *b) {
   return ((strobj *)b)->value - ((strobj *)a)->value;
+}
+int comp_value_par_weight(const void *a, const void *b) {
+  return ((strobj *)b)->value_par_weight - ((strobj *)a)->value_par_weight;
 }
 //-------------------------------------------------------------
 int datadel(int nap_size,int obj_max,strobj *object){
@@ -155,7 +162,7 @@ int dynamicprg(int nap_size,int obj_max,strobj *object){
          dp[i][w] = dp[i-1][w];
        }
        */
-      //printf("%d ",dp[w]);
+      printf("%d ",dp[w]);
   }
   }
   return dp[nap_size];

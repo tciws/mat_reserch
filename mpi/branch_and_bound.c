@@ -7,8 +7,6 @@ int bab(int nap_size,strobj *object,int table_size,int index){
   //recursion_rank++;
   //printf("recursion_rank=%d\n",recursion_rank);
   int in,out;
-  //out = bab_recursion(0,nap_size,object,table_size,0);
-  //in =bab_recursion(1,nap_size,object,table_size,0);
   //入れない時の処理
   //printf("table_size = %d\n",table_size);
   if(table_size == index){
@@ -64,39 +62,3 @@ while(1){
 }
 return value_count;
 }
-/*
-int bab_recursion(int flag,int nap_size,strobj *object, int table_size, int index){
-  int in,out;
-  //入れない時の処理
-  if(flag == 0){
-    //荷物テーブルの終端に来た時の処理
-    if(index == table_size){
-      out = 0;
-    }
-    else{
-      //それ以外の今見ている荷物を入れない時の処理
-      bab_recursion(0,nap_size,object,table_size,index+1);
-      bab_recursion(1,nap_size,object,table_size,index+1);
-    }
-  }
-  //入れる時の処理
-  if(flag == 1){
-    //ナップサイズ以上の荷物の時の処理
-    if(nap_size < object[index].weight){
-    }
-    else{
-      //荷物テーブルの終端に来た時の処理
-      if(index == table_size){
-        in = interim_solution + object[index].value;
-      }
-      else{
-      //それ以外の今見ている荷物を入れる時の処理
-      interim_solution += object[index].value;
-      bab_recursion(0,(nap_size-object[index].weight),object,table_size,index+1);
-      bab_recursion(1,(nap_size-object[index].weight),object,table_size,index+1);
-      }
-    }
-  }
-  return ((in > out) ?  in : out);
-}
-*/
