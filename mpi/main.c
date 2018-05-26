@@ -32,9 +32,12 @@ int main(void)
   //printf("%d , %d\n",object[i].weight,object[i].value);
   }
   start = clock();
+  printf("execute qsort...value\n");
   qsort(object, table_size, sizeof(*object), comp_value);
+  printf("execute qsort...weight\n");
   qsort(object, table_size, sizeof(*object), comp_weight);
-
+  /*
+  printf("delete data\n");
   table_size = datadel(nap_size,table_size,object);
   printf("削減後のデータサイズは%dです\n",table_size);
   delobject = (strobj *)realloc(object,table_size*sizeof(strobj));
@@ -42,6 +45,7 @@ int main(void)
     printf( "メモリ確保エラー(2)\n" );
   }
   object = delobject;
+  */
   //+++++++++++++++++++++++++++++++++++++
   //動的計画法
   ans = dynamicprg(nap_size,table_size,object);
@@ -52,11 +56,12 @@ int main(void)
   //+++++++++++++++++++++++++++++++++++++
   //分枝限定法
   start = clock();
+  printf("execute qsort...value_par_weight\n");
   qsort(object, table_size, sizeof(*object), comp_value_par_weight);
   for(i = 0 ;i < table_size; i++){
-      printf("%d , %d\n",object[i].weight,object[i].value);
+    printf("%d , %d , %lf\n",object[i].weight,object[i].value,object[i].value_par_weight);
   }
-  greedy_ans = greedy(nap_size,object,0,table_size);
+  greedy_ans = greedy(nap_size,object,0,table_size,0);
   interim_solution = greedy_ans;
   //ans = linear_relaxation(nap_size,object,0,table_size);
   ans = bab(nap_size,object,table_size,0,0);
@@ -77,7 +82,22 @@ int comp_value(const void *a, const void *b) {
   return ((strobj *)b)->value - ((strobj *)a)->value;
 }
 int comp_value_par_weight(const void *a, const void *b) {
-  return ((strobj *)b)->value_par_weight - ((strobj *)a)->value_par_weight;
+  if(((strobj *)b)->value_par_weight < ((strobj *)a)->value_par_weight){
+    return -1;
+  }
+  if(((strobj *)b)->value_par_weight == ((strobj *)a)->value_par_weight){
+    if(((strobj *)b)->weight > ((strobj *)a)->weight){
+      return 1;
+    }
+    if(((strobj *)b)->weight > ((strobj *)a)->weight){
+      return -1;
+    }else{
+      return 0;
+    }
+  }
+  if(((strobj *)b)->value_par_weight > ((strobj *)a)->value_par_weight){
+    return 1;
+  }
 }
 //-------------------------------------------------------------
 int datadel(int nap_size,int obj_max,strobj *object){

@@ -1,4 +1,4 @@
-#define FILENAME "data4k.dat"
+#define FILENAME "data4.dat"
 //荷物情報格納用構造体
 typedef struct {
   int weight;

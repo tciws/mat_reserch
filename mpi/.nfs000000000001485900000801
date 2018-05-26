@@ -12,7 +12,6 @@ int bab(int nap_size,strobj *object,int table_size,int index,int interim_value){
   float top;
   recursion_rank++;
   printf("\n object[%d] = %d\n\n",index,object[index].value);
-printf("\n##value >>>>>>> %d\n\n",interim_value);
   if(recursion_rank == 1){
     top = linear_relaxation(nap_size,object,index,table_size,interim_value);
     /*
@@ -99,8 +98,7 @@ float linear_relaxation(int nap_size,strobj *object,int index,int table_size,int
 //線形緩和法
 float ans;
 //int value_count=value;
-int i = 0;
-printf("value = %d\n",value);
+int i = index;
 for(i = index;i < table_size;i++){
   if(nap_size >= object[i].weight){
           nap_size -= object[i].weight;
