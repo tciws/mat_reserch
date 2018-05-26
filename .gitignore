@@ -1,1 +1,4 @@
-inouchi.dat
+.DS_Store
+*.exe
+*.dat
+*.o
