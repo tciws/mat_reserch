@@ -49,8 +49,8 @@ int dynamicprg(int nap_size,int obj_max,strobj *object){
     for (w = nap_size; w >= 0; w--) {
       if (w >= object[i-1].weight){
       dp[w] = max(dp[w-object[i].weight] + object[i].value, dp[w]);
-      //printf("%d ",dp[w]);
-      }
+    }
+      printf("%d ",dp[w]);
   }
   }
   return dp[nap_size];

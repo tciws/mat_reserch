@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <time.h>
 #include "mpi.h"
+int greedy_ans = 0;
+int interim_solution = 0;
 int main(void)
 {
   clock_t start,end;
@@ -11,7 +13,7 @@ int main(void)
   strobj *delobject;
   int tmp[2];
   int  i, table_size,nap_size;
-  int ans;
+  int ans,tmp_ans;
   fp = fopen( fname, "rb" );
   if( fp == NULL ){
     printf( "%sファイルが開けません\n", fname );
@@ -26,26 +28,49 @@ int main(void)
   fread( tmp, sizeof( int ),2, fp );
   object[i].weight = tmp[0];
   object[i].value = tmp[1];
-  printf("%d , %d\n",object[i].weight,object[i].value);
+  object[i].value_par_weight = (float)tmp[1]/tmp[0];
+  //printf("%d , %d\n",object[i].weight,object[i].value);
   }
   start = clock();
+  printf("execute qsort...value\n");
   qsort(object, table_size, sizeof(*object), comp_value);
+  printf("execute qsort...weight\n");
   qsort(object, table_size, sizeof(*object), comp_weight);
-
+  /*
+  printf("delete data\n");
   table_size = datadel(nap_size,table_size,object);
-  //printf("削減後のデータサイズは%dです\n",table_size);
+  printf("削減後のデータサイズは%dです\n",table_size);
   delobject = (strobj *)realloc(object,table_size*sizeof(strobj));
   if( delobject == NULL ) {
     printf( "メモリ確保エラー(2)\n" );
   }
   object = delobject;
+  */
+  //+++++++++++++++++++++++++++++++++++++
+  //動的計画法
   ans = dynamicprg(nap_size,table_size,object);
   end = clock();
-  bab(nap_size,object,table_size,0);
-  printf("解答は%d\n",ans);
+  printf("動的計画法の解答は%d\n",ans);
   printf("%.6f秒かかりました\n",(double)(end-start)/CLOCKS_PER_SEC);
-  free(object);
+  //+++++++++++++++++++++++++++++++++++++
+  //+++++++++++++++++++++++++++++++++++++
+  //分枝限定法
+  start = clock();
+  printf("execute qsort...value_par_weight\n");
+  qsort(object, table_size, sizeof(*object), comp_value_par_weight);
+  for(i = 0 ;i < table_size; i++){
+    printf("%d , %d , %lf\n",object[i].weight,object[i].value,object[i].value_par_weight);
+  }
+  greedy_ans = greedy(nap_size,object,0,table_size,0);
+  interim_solution = greedy_ans;
+  //ans = linear_relaxation(nap_size,object,0,table_size);
+  ans = bab(nap_size,object,table_size,0,0);
+  end = clock();
+  printf("分枝限定法の解答は%d\n",ans);
+  printf("%.6f秒かかりました\n",(double)(end-start)/CLOCKS_PER_SEC);
+  //+++++++++++++++++++++++++++++++++++++
   fclose( fp );
+  free(object);
   return 0;
 }
 //-------------------------------------------------------------
@@ -55,6 +80,24 @@ int comp_weight(const void *a, const void *b) {
 //-------------------------------------------------------------
 int comp_value(const void *a, const void *b) {
   return ((strobj *)b)->value - ((strobj *)a)->value;
+}
+int comp_value_par_weight(const void *a, const void *b) {
+  if(((strobj *)b)->value_par_weight < ((strobj *)a)->value_par_weight){
+    return -1;
+  }
+  if(((strobj *)b)->value_par_weight == ((strobj *)a)->value_par_weight){
+    if(((strobj *)b)->weight > ((strobj *)a)->weight){
+      return 1;
+    }
+    if(((strobj *)b)->weight > ((strobj *)a)->weight){
+      return -1;
+    }else{
+      return 0;
+    }
+  }
+  if(((strobj *)b)->value_par_weight > ((strobj *)a)->value_par_weight){
+    return 1;
+  }
 }
 //-------------------------------------------------------------
 int datadel(int nap_size,int obj_max,strobj *object){
@@ -69,16 +112,13 @@ int datadel(int nap_size,int obj_max,strobj *object){
   for(i = 0; i<obj_max; i++){
     //前回の値と同じ場合はカウントアップ
     if(weight_tmp == object[i].weight){
-      if(value_tmp == object[i].value){
-        value_count++;
-      }
       count++;
     }else{
       //printf("count = %d\n",count);
       imitate_num = nap_size/object[i].weight;    //現在の重さの荷物が入る最大の個数を計算
       //printf("imitate_num = %d\n",imitate_num);
-      count=0;          //前回の値と異なる場合count初期化
-      count++;
+      count=1;          //前回の値と異なる場合count初期化
+      //count++;
     }
   //現在の値を一時保存
   if(count <= imitate_num && object[i].value != 0){
@@ -93,76 +133,5 @@ int datadel(int nap_size,int obj_max,strobj *object){
     value_tmp = object[i].value;
   }
   }
-  for(i = 0 ;i < table_count; i++){
-      //printf("%d , %d\n",object[i].weight,object[i].value);
-  }
   return table_count;
   }
-//---------------------------------------------------------------------
-int dynamicprg(int nap_size,int obj_max,strobj *object){
-  /*
-  int dp[obj_max][nap_size+1];
-  int i,w;
-  for (w = 0; w <= nap_size; w++) {
-    if(w<object[0].weight){
-      dp[0][w] = 0;
-    }else
-    {
-      dp[0][w]=object[0].value;
-    }
-    //printf("%d ",dp[0][w]);
-  }
-  //動的計画法
-  //printf("\n動的計画法\n");
-  for (i = 1; i < obj_max; i++) {
-    for (w = 0; w <= nap_size; w++) {
-      if (w >= object[i-1].weight){
-      dp[i][w] = max(dp[i-1][w-object[i].weight] + object[i].value, dp[i-1][w]);
-      }
-      else{
-         dp[i][w] = dp[i-1][w];
-       }
-      //printf("%d ",dp[i][w]);
-  }
-  }
-  return dp[obj_max-1][nap_size];
-  */
-  //int dp[nap_size+1];
-  int *dp;
-  dp = (int *)calloc(nap_size+1,sizeof(int));
-  int i,w;
-  for (w = 0; w <= nap_size; w++) {
-    if(w<object[0].weight){
-      dp[w] = 0;
-    }else
-    {
-      dp[w]=object[0].value;
-    }
-    //printf("%d ",dp[0][w]);
-  }
-  //動的計画法
-  //printf("\n動的計画法\n");
-  for (i = 1; i < obj_max; i++) {
-    for (w = nap_size; w >= 0; w--) {
-      if (w >= object[i-1].weight){
-      dp[w] = max(dp[w-object[i].weight] + object[i].value, dp[w]);
-      }
-      /*
-      else{
-         dp[i][w] = dp[i-1][w];
-       }
-       */
-      //printf("%d ",dp[w]);
-  }
-  }
-  return dp[nap_size];
-}
-//----------------------------------------------------------------
-int max(int temp1, int temp2){
-  if(temp1>=temp2){
-    return temp1;
-  }
-  if(temp2>temp1){
-    return temp2;
-  }
-}
