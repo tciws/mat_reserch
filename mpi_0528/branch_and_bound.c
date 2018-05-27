@@ -1,5 +1,5 @@
 #include<stdio.h>
-#include "structure.h"
+#include "mpi.h"
 int greedy_ans;
 int recursion_rank = 0;
 int interim_solution;

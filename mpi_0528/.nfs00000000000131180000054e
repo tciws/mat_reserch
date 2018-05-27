@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include "structure.h"
+#include "mpi.h"
 int greedy_ans = 0;
 int interim_solution = 0;
 int main(void)
@@ -13,16 +13,7 @@ int main(void)
   strobj *delobject;
   int tmp[2];
   int  i, table_size,nap_size;
-  int ans,tmp_ans,dt;
-  while(1){
-      puts("dp->0||bab->1");
-      scanf("%d", &dt);
-      if(dt<= 1){
-        break;
-      }else{
-        puts("0,1の値を入れてください");
-      }
-  }
+  int ans,tmp_ans;
   fp = fopen( fname, "rb" );
   if( fp == NULL ){
     printf( "%sファイルが開けません\n", fname );
@@ -38,20 +29,12 @@ int main(void)
   object[i].weight = tmp[0];
   object[i].value = tmp[1];
   object[i].value_par_weight = (float)tmp[1]/tmp[0];
-  object[i].use_flag = -1;
   //printf("%d , %d\n",object[i].weight,object[i].value);
   }
   start = clock();
-  printf("execute qsort...value\n");
   qsort(object, table_size, sizeof(*object), comp_value);
-  printf("execute qsort...weight\n");
   qsort(object, table_size, sizeof(*object), comp_weight);
-/*
-for(i = 0 ;i < ; i++){
-  printf("%d , %d , %lf\n",object[i].weight,object[i].value,object[i].value_par_weight);
-}
-*/
-  printf("delete data\n");
+
   table_size = datadel(nap_size,table_size,object);
   printf("削減後のデータサイズは%dです\n",table_size);
   delobject = (strobj *)realloc(object,table_size*sizeof(strobj));
@@ -61,36 +44,25 @@ for(i = 0 ;i < ; i++){
   object = delobject;
   //+++++++++++++++++++++++++++++++++++++
   //動的計画法
-  if(dt == 0){
-      printf("execute dynamic programing...\n");
-      ans = dynamicprg(nap_size,table_size,object);
-      end = clock();
-      printf("動的計画法の解答は%d\n",ans);
-      printf("%.10f秒かかりました\n",(double)(end-start)/CLOCKS_PER_SEC);
-  }else{
-    //+++++++++++++++++++++++++++++++++++++
-    //+++++++++++++++++++++++++++++++++++++
-    //分枝限定法
-    /*
-  for(i = 0 ;i < 10; i++){
-    printf("%d , %d , %lf\n",object[i].weight,object[i].value,object[i].value_par_weight);
+  ans = dynamicprg(nap_size,table_size,object);
+  end = clock();
+  printf("動的計画法の解答は%d\n",ans);
+  printf("%.6f秒かかりました\n",(double)(end-start)/CLOCKS_PER_SEC);
+  //+++++++++++++++++++++++++++++++++++++
+  //+++++++++++++++++++++++++++++++++++++
+  //分枝限定法
+  start = clock();
+  qsort(object, table_size, sizeof(*object), comp_value_par_weight);
+  for(i = 0 ;i < table_size; i++){
+      printf("%d , %d\n",object[i].weight,object[i].value);
   }
-  */
-    printf("execute qsort...value_par_weight\n");
-    qsort(object, table_size, sizeof(*object), comp_value_par_weight);
-    /*
-    for(i = 0 ;i < table_size; i++){
-      printf("%d , %d , %lf\n",object[i].weight,object[i].value,object[i].value_par_weight);
-    }
-    */
-    greedy_ans = greedy(nap_size,object,0,table_size,0);
-    interim_solution = greedy_ans;
-    printf("execute branch and bound...\n");
-    ans = bab(nap_size,object,table_size,0,0);
-    end = clock();
-    printf("分枝限定法の解答は%d\n",ans);
-    printf("%.10f秒かかりました\n",(double)(end-start)/CLOCKS_PER_SEC);
-  }
+  greedy_ans = greedy(nap_size,object,0,table_size);
+  interim_solution = greedy_ans;
+  //ans = linear_relaxation(nap_size,object,0,table_size);
+  ans = bab(nap_size,object,table_size,0,0);
+  end = clock();
+  printf("分枝限定法の解答は%d\n",ans);
+  printf("%.6f秒かかりました\n",(double)(end-start)/CLOCKS_PER_SEC);
   //+++++++++++++++++++++++++++++++++++++
   fclose( fp );
   free(object);
@@ -98,44 +70,14 @@ for(i = 0 ;i < ; i++){
 }
 //-------------------------------------------------------------
 int comp_weight(const void *a, const void *b) {
-  if(((strobj *)a)->weight < ((strobj *)b)->weight){
-    return -1;
-  }
-  if(((strobj *)a)->weight == ((strobj *)b)->weight){
-    if(((strobj *)b)->value > ((strobj *)a)->value){
-      return 1;
-    }
-    if(((strobj *)b)->value < ((strobj *)a)->value){
-      return -1;
-    }else{
-      return 0;
-    }
-  }
-  if(((strobj *)a)->weight > ((strobj *)b)->weight){
-    return 1;
-  }
+  return ((strobj *)a)->weight - ((strobj *)b)->weight;
 }
 //-------------------------------------------------------------
 int comp_value(const void *a, const void *b) {
   return ((strobj *)b)->value - ((strobj *)a)->value;
 }
 int comp_value_par_weight(const void *a, const void *b) {
-  if(((strobj *)b)->value_par_weight < ((strobj *)a)->value_par_weight){
-    return -1;
-  }
-  if(((strobj *)b)->value_par_weight == ((strobj *)a)->value_par_weight){
-    if(((strobj *)b)->weight > ((strobj *)a)->weight){
-      return 1;
-    }
-    if(((strobj *)b)->weight > ((strobj *)a)->weight){
-      return -1;
-    }else{
-      return 0;
-    }
-  }
-  if(((strobj *)b)->value_par_weight > ((strobj *)a)->value_par_weight){
-    return 1;
-  }
+  return ((strobj *)b)->value_par_weight - ((strobj *)a)->value_par_weight;
 }
 //-------------------------------------------------------------
 int datadel(int nap_size,int obj_max,strobj *object){
