@@ -34,21 +34,17 @@ int dynamicprg(int nap_size,int obj_max,strobj *object){
   int *dp;
   dp = (int *)calloc(nap_size+1,sizeof(int));
   int i,w;
+  /*
   for (w = 0; w <= nap_size; w++) {
-    if(w<object[0].weight){
-      dp[w] = 0;
-    }else
-    {
-      dp[w]=object[0].value;
-    }
-    //printf("%d ",dp[0][w]);
+    printf("%d ",dp[w]);
   }
+  */
   //動的計画法
   //printf("\n動的計画法\n");
-  for (i = 1; i < obj_max; i++) {
-    for (w = nap_size; w >= 0; w--) {
-      if (w >= object[i-1].weight){
-      dp[w] = max(dp[w-object[i].weight] + object[i].value, dp[w]);
+  for (i = 0; i < obj_max; i++) {
+    for (w = nap_size; w >= object[i].weight; w--) {
+      if (dp[w] < dp[w-object[i].weight] + object[i].value){//i-1
+      dp[w] = dp[w-object[i].weight] + object[i].value;
       //printf("%d ",dp[w]);
       }
   }
