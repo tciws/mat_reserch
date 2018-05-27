@@ -1,13 +1,10 @@
-<<<<<<< HEAD
-#define FILENAME "a-ito.dat"
-=======
-#define FILENAME "data4k.dat"
->>>>>>> matpc
+#define FILENAME "data5.dat"
 //荷物情報格納用構造体
 typedef struct {
   int weight;
   int value;
   float value_par_weight;
+  char use_flag;
 }strobj;
 int comp_weight(const void *a, const void *b);
 int comp_value(const void *a, const void *b);

@@ -29,6 +29,7 @@ int main(void)
   object[i].weight = tmp[0];
   object[i].value = tmp[1];
   object[i].value_par_weight = (float)tmp[1]/tmp[0];
+  object[i].use_flag = -1;
   //printf("%d , %d\n",object[i].weight,object[i].value);
   }
   start = clock();
