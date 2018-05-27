@@ -71,6 +71,11 @@ for(i = 0 ;i < 10; i++){
     //+++++++++++++++++++++++++++++++++++++
     //+++++++++++++++++++++++++++++++++++++
     //分枝限定法
+    /*
+  for(i = 0 ;i < 10; i++){
+    printf("%d , %d , %lf\n",object[i].weight,object[i].value,object[i].value_par_weight);
+  }
+  */
     printf("execute qsort...value_par_weight\n");
     qsort(object, table_size, sizeof(*object), comp_value_par_weight);
     /*
