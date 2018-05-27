@@ -15,14 +15,12 @@ int bab(int nap_size,strobj *object,int table_size,int index,int interim_value){
   //printf("\n##value >>>>>>> %d\n\n",interim_value);
   top = linear_relaxation(nap_size,object,index,table_size,interim_value);
   //printf("top=%lf\n",top);
-  /*
   if(recursion_rank == 1){
     //top = linear_relaxation(nap_size,object,index,table_size,interim_value);
     if(greedy_ans == top){
       return greedy_ans;
     }
   }
-  */
   //printf("recursion_rank=%d\n",recursion_rank);
   //入れない時の処理
   //printf("+++++++++++++++++++++++++\n");

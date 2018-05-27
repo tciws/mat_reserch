@@ -13,7 +13,16 @@ int main(void)
   strobj *delobject;
   int tmp[2];
   int  i, table_size,nap_size;
-  int ans,tmp_ans;
+  int ans,tmp_ans,dt;
+  while(1){
+      puts("dp->0||bab->1");
+      scanf("%d", &dt);
+      if(dt<= 1){
+        break;
+      }else{
+        puts("0,1の値を入れてください");
+      }
+  }
   fp = fopen( fname, "rb" );
   if( fp == NULL ){
     printf( "%sファイルが開けません\n", fname );
@@ -37,9 +46,11 @@ int main(void)
   qsort(object, table_size, sizeof(*object), comp_value);
   printf("execute qsort...weight\n");
   qsort(object, table_size, sizeof(*object), comp_weight);
+  /*
 for(i = 0 ;i < 10; i++){
   printf("%d , %d , %lf\n",object[i].weight,object[i].value,object[i].value_par_weight);
 }
+*/
   printf("delete data\n");
   table_size = datadel(nap_size,table_size,object);
   printf("削減後のデータサイズは%dです\n",table_size);
@@ -50,28 +61,31 @@ for(i = 0 ;i < 10; i++){
   object = delobject;
   //+++++++++++++++++++++++++++++++++++++
   //動的計画法
-  printf("execute dynamic programing...\n");
-  ans = dynamicprg(nap_size,table_size,object);
-  end = clock();
-  printf("動的計画法の解答は%d\n",ans);
-  printf("%.6f秒かかりました\n",(double)(end-start)/CLOCKS_PER_SEC);
-  //+++++++++++++++++++++++++++++++++++++
-  //+++++++++++++++++++++++++++++++++++++
-  //分枝限定法
-  printf("execute qsort...value_par_weight\n");
-  qsort(object, table_size, sizeof(*object), comp_value_par_weight);
-  /*
-  for(i = 0 ;i < table_size; i++){
-    printf("%d , %d , %lf\n",object[i].weight,object[i].value,object[i].value_par_weight);
+  if(dt == 0){
+      printf("execute dynamic programing...\n");
+      ans = dynamicprg(nap_size,table_size,object);
+      end = clock();
+      printf("動的計画法の解答は%d\n",ans);
+      printf("%.6f秒かかりました\n",(double)(end-start)/CLOCKS_PER_SEC);
+  }else{
+    //+++++++++++++++++++++++++++++++++++++
+    //+++++++++++++++++++++++++++++++++++++
+    //分枝限定法
+    printf("execute qsort...value_par_weight\n");
+    qsort(object, table_size, sizeof(*object), comp_value_par_weight);
+    /*
+    for(i = 0 ;i < table_size; i++){
+      printf("%d , %d , %lf\n",object[i].weight,object[i].value,object[i].value_par_weight);
+    }
+    */
+    greedy_ans = greedy(nap_size,object,0,table_size,0);
+    interim_solution = greedy_ans;
+    printf("execute branch and bound...\n");
+    ans = bab(nap_size,object,table_size,0,0);
+    end = clock();
+    printf("分枝限定法の解答は%d\n",ans);
+    printf("%.6f秒かかりました\n",(double)(end-start)/CLOCKS_PER_SEC);
   }
-  */
-  greedy_ans = greedy(nap_size,object,0,table_size,0);
-  interim_solution = greedy_ans;
-  printf("execute branch and bound...\n");
-  ans = bab(nap_size,object,table_size,0,0);
-  end = clock();
-  printf("分枝限定法の解答は%d\n",ans);
-  printf("%.6f秒かかりました\n",(double)(end-start)/CLOCKS_PER_SEC);
   //+++++++++++++++++++++++++++++++++++++
   fclose( fp );
   free(object);
