@@ -29,13 +29,16 @@ int main(void)
   fwrite(&size, sizeof(size), 1, datafile);
   fwrite(&num, sizeof(num), 1, datafile);
 
-  for (i = 0;i < num;i++) {
+  for (i = 0;i < num-1;i++) {
     weight = GetRandom(wmin,wmax);
     value = GetRandom(vmin,vmax);
     fwrite(&weight, sizeof(weight), 1, datafile);
     fwrite(&value, sizeof(value), 1, datafile);
   }
-
+  weight = 10000;
+  value = 10000;
+  fwrite(&weight, sizeof(weight), 1, datafile);
+  fwrite(&value, sizeof(value), 1, datafile);
   printf("correct.\n");
   fclose(datafile);
   return 0;
