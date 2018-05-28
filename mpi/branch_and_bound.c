@@ -76,10 +76,11 @@ int bab(int nap_size,strobj *object,int table_size,int index,int interim_value){
     }
   }
   recursion_rank--;
-  //printf("in=%d,out=%d\n",in,out);
+  printf("\nindex->%d   ",index);
+  printf("in=%d,out=%d\n",in,out);
   ans = max(in,out);
   interim_solution = max(interim_solution,ans);
-  printf("rank = %d,暫定解%d\n", recursion_rank,interim_solution);
+  //printf("rank = %d,暫定解%d\n", recursion_rank,interim_solution);
   //printf("interim_solution = %d\n",interim_solution);
   //printf("現在のナップサックサイズぞい！=%d\n",nap_size);
   //printf("\n\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@   暫定解=%d\n\n",ans);
