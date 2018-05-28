@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "mpi.h"
+#include "structure.h"
 //---------------------------------------------------------------------
 int dynamicprg(int nap_size,int obj_max,strobj *object){
   /*
