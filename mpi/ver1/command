@@ -1,0 +1,5 @@
+export PATH="$PATH:/usr/lib64/mpich/bin"
+
+mpicc hello.c -lmpich -L/usr/lib64/mpich/lib
+
+mpiexec -n 10 -f mpd.hosts /home/27115/ckl15040/mat_reserch/mpi/ver1/a.out

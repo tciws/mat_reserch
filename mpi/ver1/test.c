@@ -1,12 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
+#include "structure_mpi.h"
 #include "mpi.h"
-int greedy_ans = 0;
-int interim_solution = 0;
-int main(void)
-{
-  clock_t start,end;
+int main(int arc, char argv[]){
   FILE *fp;
   char *fname = FILENAME;
   strobj *object;
@@ -14,22 +10,23 @@ int main(void)
   int tmp[2];
   int  i, table_size,nap_size;
   int ans,tmp_ans,dt;
-  while(1){
-      puts("dp->0||bab->1");
-      scanf("%d", &dt);
-      if(dt<= 1){
-        break;
-      }else{
-        puts("0,1の値を入れてください");
-      }
-  }
+  ////////////////////////////////////////
+  ///////////////////////////////////////
+  //MPI用変数
+  int myrank,numprocs;
+  //////////////////////////////////////
+  /////////////////////////////////////
   fp = fopen( fname, "rb" );
   if( fp == NULL ){
     printf( "%sファイルが開けません\n", fname );
     return -1;
   }
+  ////////////////////////////////
+  //MPI_Barrier(MPI_COMM_WORLD);
+  //time_before = MPI_Wtime();
+  ///////////////////////////////
   fread(tmp,sizeof(int),2,fp); //ファイル先頭から，荷物の個数とナップサックのサイズを取得
-  //printf("ナップサックのサイズ->%d\n荷物の数->%d\n",tmp[0],tmp[1]);
+  printf("ナップサックのサイズ->%d\n荷物の数->%d\n",tmp[0],tmp[1]);
   object = (strobj *)calloc(tmp[1],sizeof(strobj));
   nap_size = tmp[0];
   table_size = tmp[1];
@@ -41,7 +38,6 @@ int main(void)
   object[i].use_flag = -1;
   //printf("%d , %d\n",object[i].weight,object[i].value);
   }
-  start = clock();
   printf("execute qsort...value\n");
   qsort(object, table_size, sizeof(*object), comp_value);
   printf("execute qsort...weight\n");
@@ -59,39 +55,26 @@ for(i = 0 ;i < 10; i++){
     printf( "メモリ確保エラー(2)\n" );
   }
   object = delobject;
-  //+++++++++++++++++++++++++++++++++++++
-  //動的計画法
-  if(dt == 0){
-      printf("execute dynamic programing...\n");
-      ans = dynamicprg(nap_size,table_size,object);
-      end = clock();
-      printf("動的計画法の解答は%d\n",ans);
-      printf("%.6f秒かかりました\n",(double)(end-start)/CLOCKS_PER_SEC);
-  }else{
     //+++++++++++++++++++++++++++++++++++++
     //+++++++++++++++++++++++++++++++++++++
     //分枝限定法
-    /*
-  for(i = 0 ;i < 10; i++){
-    printf("%d , %d , %lf\n",object[i].weight,object[i].value,object[i].value_par_weight);
-  }
-  */
     printf("execute qsort...value_par_weight\n");
     qsort(object, table_size, sizeof(*object), comp_value_par_weight);
-    /*
-    for(i = 0 ;i < table_size; i++){
+    /////////////////////////////////////////
+    MPI_Init(&argc,&argv);
+    MPI_Comm_size(MPI_COMM_WORLD,&numprocs);//全プロセス数を取得
+    MPI_Comm_rank(MPI_COMM_WORLD,&myrank);//自分のプロセス番号を取得
+    /////////////////////////////////////////
+    MPI_Bcast(object, table_size, MPI_INT, 0, MPI_COMM_WORLD);
+    if(myrank == 1){
+      for(i = 0 ;i < table_size; i++){
       printf("%d , %d , %lf\n",object[i].weight,object[i].value,object[i].value_par_weight);
+      }
     }
-    */
-    greedy_ans = greedy(nap_size,object,0,table_size,0);
-    interim_solution = greedy_ans;
-    printf("execute branch and bound...\n");
-    ans = bab(nap_size,object,table_size,0,0);
-    end = clock();
-    printf("分枝限定法の解答は%d\n",ans);
-    printf("%.6f秒かかりました\n",(double)(end-start)/CLOCKS_PER_SEC);
-  }
-  //+++++++++++++++++++++++++++++++++++++
+  ///////////////////////////////////////
+  //MPI_Barrier(MPI_COMM_WORLD);
+  //time_after = MPI_Wtime();
+  ///////////////////////////////////////
   fclose( fp );
   free(object);
   return 0;

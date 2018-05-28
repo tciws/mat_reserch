@@ -7,4 +7,9 @@
 - MPI_BCASTは放送
 - MPI_
 ## 構文集
--
+- **MPI_Init(&argc,&argv)**
+  - MPI初期化
+- **MPI_Comm_size(MPI_COMM_WORLD,&numprocs)**
+  - 全プロセス数を確認
+- **MPI_Comm_rank(MPI_COMM_WORLD,&myid)**
+  - 自分のプロセス番号の確認

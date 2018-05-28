@@ -30,7 +30,7 @@ int main(void)
     return -1;
   }
   fread(tmp,sizeof(int),2,fp); //ファイル先頭から，荷物の個数とナップサックのサイズを取得
-  //printf("ナップサックのサイズ->%d\n荷物の数->%d\n",tmp[0],tmp[1]);
+  printf("ナップサックのサイズ->%d\n荷物の数->%d\n",tmp[0],tmp[1]);
   object = (strobj *)calloc(tmp[1],sizeof(strobj));
   nap_size = tmp[0];
   table_size = tmp[1];
@@ -47,11 +47,7 @@ int main(void)
   qsort(object, table_size, sizeof(*object), comp_value);
   printf("execute qsort...weight\n");
   qsort(object, table_size, sizeof(*object), comp_weight);
-  /*
-for(i = 0 ;i < 10; i++){
-  printf("%d , %d , %lf\n",object[i].weight,object[i].value,object[i].value_par_weight);
-}
-*/
+
   printf("delete data\n");
   table_size = datadel(nap_size,table_size,object);
   printf("削減後のデータサイズは%dです\n",table_size);
@@ -79,6 +75,11 @@ for(i = 0 ;i < 10; i++){
   */
     printf("execute qsort...value_par_weight\n");
     qsort(object, table_size, sizeof(*object), comp_value_par_weight);
+    /*
+    for(i = 0 ;i < table_size; i++){
+      printf("%d , %d , %lf\n",object[i].weight,object[i].value,object[i].value_par_weight);
+    }
+    */
     /*
     for(i = 0 ;i < table_size; i++){
       printf("%d , %d , %lf\n",object[i].weight,object[i].value,object[i].value_par_weight);

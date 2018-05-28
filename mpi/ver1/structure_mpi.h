@@ -1,4 +1,5 @@
-#define FILENAME "seko.dat"
+#define FILENAME "a-ito.dat"
+#define MSG_LEN 100
 //荷物情報格納用構造体
 typedef struct {
   int weight;
@@ -6,6 +7,11 @@ typedef struct {
   float value_par_weight;
   char use_flag;
 }strobj;
+typedef struct{
+  strobj *data;
+  int data_size;
+  int pool_size;
+}MPI_data;
 int comp_weight(const void *a, const void *b);
 int comp_value(const void *a, const void *b);
 int comp_value_par_weight(const void *a, const void *b);
