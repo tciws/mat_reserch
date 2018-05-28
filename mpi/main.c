@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include "structure.h"
+//#include "mpi.h"
 int greedy_ans = 0;
 int interim_solution = 0;
 int main(void)
@@ -46,8 +47,8 @@ int main(void)
   qsort(object, table_size, sizeof(*object), comp_value);
   printf("execute qsort...weight\n");
   qsort(object, table_size, sizeof(*object), comp_weight);
-/*
-for(i = 0 ;i < ; i++){
+  /*
+for(i = 0 ;i < 10; i++){
   printf("%d , %d , %lf\n",object[i].weight,object[i].value,object[i].value_par_weight);
 }
 */
@@ -66,7 +67,7 @@ for(i = 0 ;i < ; i++){
       ans = dynamicprg(nap_size,table_size,object);
       end = clock();
       printf("動的計画法の解答は%d\n",ans);
-      printf("%.10f秒かかりました\n",(double)(end-start)/CLOCKS_PER_SEC);
+      printf("%.6f秒かかりました\n",(double)(end-start)/CLOCKS_PER_SEC);
   }else{
     //+++++++++++++++++++++++++++++++++++++
     //+++++++++++++++++++++++++++++++++++++
@@ -89,7 +90,7 @@ for(i = 0 ;i < ; i++){
     ans = bab(nap_size,object,table_size,0,0);
     end = clock();
     printf("分枝限定法の解答は%d\n",ans);
-    printf("%.10f秒かかりました\n",(double)(end-start)/CLOCKS_PER_SEC);
+    printf("%.6f秒かかりました\n",(double)(end-start)/CLOCKS_PER_SEC);
   }
   //+++++++++++++++++++++++++++++++++++++
   fclose( fp );
