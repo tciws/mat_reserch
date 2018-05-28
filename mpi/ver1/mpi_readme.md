@@ -1,0 +1,15 @@
+# MPIプログラミング
+## MPI雑感
+- rank0はプログラム実行と同時に作成される
+- rank1以降はMPI_INITをcallする時点で作成される.
+- rank同士は基本思い思いに動作する.
+- MPI_SEND,MPI_Recvはデッドロックが発生する可能性がある
+- MPI_BCASTは放送
+- MPI_
+## 構文集
+- **MPI_Init(&argc,&argv)**
+  - MPI初期化
+- **MPI_Comm_size(MPI_COMM_WORLD,&numprocs)**
+  - 全プロセス数を確認
+- **MPI_Comm_rank(MPI_COMM_WORLD,&myid)**
+  - 自分のプロセス番号の確認

@@ -1,0 +1,54 @@
+# MPIプログラミング
+## 雑感
+- rank0はプログラム実行と同時に作成される
+- rank1以降はMPI_INITをcallした時点で作成される
+- rank同士は基本思い思いに動作する
+- MPI_SEND,MPI_Recvはデットロックが発生する可能性がある
+- MPI_BCASTは放送型通信
+
+## MPIで高速にするには...
+- 通信回数を減らす
+- 通信するデータの容量を減らす
+- 非ブロック通信を使い,通信しながら計算する
+- 使えるところでは一対一通信ではなく集団通信を使う
+- 不連続なデータ通信にはデータ型を作る
+
+## MPI_BCAST等で、構造体を送信する場合
+**MPI_Bcast(object,sizeof(strobj)*10,MPI_BYTE,0,MPI_COMM_WORLD);**
+構造体のサイズ(構造体変数の場合は配列の要素の個数)をかけたものを上記の例のようにして記述する.
+MPI_DATA_TYPEはMPI_BYTEとして、そのまま1バイトずつ読んであげるようにする.
+## MPI_BCAST等で、int型変数を送信する場合
+**MPI_Send(&table_size,sizeof(int), MPI_BYTE, dest, 0, MPI_COMM_WORLD);**  
+構造体送信時とほぼ同じ
+## 構文集
+- **MPI_Init(&argc,&argv)**
+  - MPI初期化
+- **MPI_Comm_size(MPI_COMM_WORLD,&numprocs)**
+  - 全プロセス数を取得
+-　**MPI_Comm_rank(MPI_COMM_WORLD,&myid)**
+  - 自分のプロセス番号を取得
+- **MPI_Wtime()**
+  - 時間計測
+- **MPI_Barrier(comm)**
+  -　グループに含まれるプロセスの動機をとる
+- **MPI_SSENDRECV**
+  - 一対一通信でデータを送るのと受信するのと両方を一回のMPI関数で呼び出す
+- **MPI_ISEND**
+  - 一対一の非ブロック通信でデータを送信する関数
+- **MPI_IRECV**
+  - 一対一の非ブロック通信でデータを受信する関数
+- **MPI_WAIT**
+  - 指定した非ブロック通信が終了するまで待つ関数
+- **MPI_BCAST**
+  - あるrankの持つデータをすべてプロセスに送受信する
+- **MPI_ALLGATHER**
+  - MPI_GATHERの結果を全プロセスに渡す
+- **MPI_ALLREDUCE**
+  - MPIREDUCEの結果を全プロセスに渡す
+
+## 参考文献
+- [東京大学のMPIスライド][d5fca90c]
+- [京都大学のMPIスライド][415a5113]
+
+  [d5fca90c]: http://nkl.cc.u-tokyo.ac.jp/seminars/T2Kfvm/MPIprog.pdf "東京大学のMPIスライド"
+  [415a5113]: http://www-is.amp.i.kyoto-u.ac.jp/data/sekido/20140521-1.pdf "京都大学のMPIスライド"

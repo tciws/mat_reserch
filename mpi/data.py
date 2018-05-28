@@ -1,6 +1,7 @@
 #coding: UTF-8
 from numpy.random import *
 def main():
+    ans_data = []
     weight1 = []
     weight2 = []
     value1 = []
@@ -21,6 +22,11 @@ def main():
             print('価値'+str(2*tmp/object_weight_max))
             break
     costp = 2*tmp/object_weight_max
+    for i in range(0,int(nap_size/10)):
+        tmp = 10
+        ans_data.append(int(tmp))
+        value = tmp * costp * 100
+        ans_data.append(int(value))
     for i in range(0,int(object_number/2)):
         while 1:
             k = randint(object_weight_min,object_weight_max)
@@ -56,10 +62,14 @@ def main():
         #print(int(value_tmp))
         data_set2.append(int(value_tmp))
     data_set.extend(data_set2)
+    data_set.extend(ans_data)
+    print(data_set)
+    object_number = object_number + int(nap_size/10)
     with open(file_name+'.dat','wb') as f:
         f.write(nap_size.to_bytes(4, byteorder='little'))
         f.write(object_number.to_bytes(4, byteorder='little'))
         for i in data_set:
+            print(i)
             f.write(i.to_bytes(4, byteorder='little'))
     print("correct..")
 main()
