@@ -26,6 +26,7 @@ int bab(int nap_size,strobj *object,int table_size,int index,int interim_value){
   //printf("+++++++++++++++++++++++++\n");
   if(table_size == index){
     out = interim_value;
+    in = interim_value;
     //printf("\n\n\n葉に到達しました\n\n\n\n");
   }else if(interim_solution == top){
       return interim_solution;
@@ -43,6 +44,7 @@ int bab(int nap_size,strobj *object,int table_size,int index,int interim_value){
     if(interim_solution > top){
       //printf("++++++++++++++++++++++++++++枝刈り++++++++++++++++++++++++++++++\n");
       out = 0;
+      in = 0;
     }else{
       //printf("value1 = %d\n",interim_value);
       out = bab(nap_size,object,table_size,index+1,interim_value);
@@ -51,11 +53,13 @@ int bab(int nap_size,strobj *object,int table_size,int index,int interim_value){
     //printf("#####################     LOG OUT: 0      #####################\n");
   //入れる時の処理
   if(table_size == index){
+    printf("value1 = %d\n",interim_value);
     in = interim_value;
+    out = interim_value;
     //printf("\n\n\n葉に到達しました\n\n\n\n");
   }else{
     if(nap_size < object[index].weight){
-      printf("ナップサックに入りません\n");
+      //printf("ナップサックに入りません\n");
       in = 0;
     }else{
           //printf("#####################    LOG IN:1     #####################\n");
@@ -76,8 +80,8 @@ int bab(int nap_size,strobj *object,int table_size,int index,int interim_value){
     }
   }
   recursion_rank--;
-  printf("\nindex->%d   ",index);
-  printf("in=%d,out=%d\n",in,out);
+  //printf("\nindex->%d   ",index);
+  //printf("in=%d,out=%d\n",in,out);
   ans = max(in,out);
   interim_solution = max(interim_solution,ans);
   //printf("rank = %d,暫定解%d\n", recursion_rank,interim_solution);
@@ -101,7 +105,7 @@ int greedy(int nap_size,strobj *object,int index,int table_size,int value){
       break;
     }
   }
-  //printf("greedy=%d\n",value);
+  printf("greedy=%d\n",value);
   return value;
 }
 float linear_relaxation(int nap_size,strobj *object,int index,int table_size,int value){
