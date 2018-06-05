@@ -1,4 +1,4 @@
-#define FILENAME "seko.dat"
+#define FILENAME "takaoka.dat"
 #define MSG_LEN 100
 #define N 100
 //荷物情報格納用構造体

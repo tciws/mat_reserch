@@ -49,6 +49,8 @@ int main(int argc, char* argv[]){
   nap_size = tmp[0];
   table_size = tmp[1];
   if(my_rank == 0){
+    int tmp_nap_size = 0;
+    int tmp_value_ans=0;
     int vailed_count;
       object = (strobj *)calloc(tmp[1],sizeof(strobj));
     //printf("ナップサックのサイズ->%d\n荷物の数->%d\n",tmp[0],tmp[1]);
@@ -61,10 +63,16 @@ int main(int argc, char* argv[]){
       vailed_count++;
       object[i].weight = tmp[0];
       object[i].value = tmp[1];
-      object[i].value_par_weight = (double)tmp[1]/tmp[0]; 
+      object[i].value_par_weight = (double)tmp[1]/tmp[0];
+      tmp_nap_size+=tmp[0];
+      tmp_value_ans+=tmp[1];
       //printf(">->->->->%d\n",vailed_count);
   }
   //printf("%d , %d\n",object[i].weight,object[i].value);
+  }
+  if(tmp_nap_size <= nap_size){
+    printf("最適解は%d\n",tmp_value_ans);
+    vailed_count = 0;
   }
   //printf(">->->->->%d\n",vailed_count);
   if(vailed_count != 0){
