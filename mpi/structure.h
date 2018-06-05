@@ -1,4 +1,4 @@
-#define FILENAME "miwa.dat"
+#define FILENAME "takaoka.dat"
 //荷物情報格納用構造体
 typedef struct {
   int weight;
@@ -6,6 +6,18 @@ typedef struct {
   float value_par_weight;
   char use_flag;
 }strobj;
+typedef struct{
+  int nap_size_data;
+  int interim;
+  int que_index;
+}IOdata;
+  typedef struct{
+  int nap_size_array[N];
+  int interim_array[N];
+  int index_array[N];
+  int head;
+  int tail;
+}queue;
 int comp_weight(const void *a, const void *b);
 int comp_value(const void *a, const void *b);
 int comp_value_par_weight(const void *a, const void *b);
