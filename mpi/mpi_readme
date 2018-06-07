@@ -18,8 +18,8 @@
 構造体のサイズ(構造体変数の場合は配列の要素の個数)をかけたものを上記の例のようにして記述する.
 MPI_DATA_TYPEはMPI_BYTEとして、そのまま1バイトずつ読んであげるようにする.
 ## MPI_BCAST等で、int型変数を送信する場合
-**MPI_Send(&table_size,sizeof(int), MPI_BYTE, dest, 0, MPI_COMM_WORLD);**  
-構造体送信時とほぼ同じ
+**MPI_Send(&table_size,sizeof(int), MPI_BYTE, dest, 0, MPI_COMM_WORLD);**
+構造体送信時とほぼ同じ,destは送信先プロセス番号を示している.
 ## 構文集
 - **MPI_Init(&argc,&argv)**
   - MPI初期化
