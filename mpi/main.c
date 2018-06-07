@@ -29,6 +29,7 @@ int main(void)
     printf( "%sファイルが開けません\n", fname );
     return -1;
   }
+  start = clock();
   fread(tmp,sizeof(int),2,fp); //ファイル先頭から，荷物の個数とナップサックのサイズを取得
   //printf("ナップサックのサイズ->%d\n荷物の数->%d\n",tmp[0],tmp[1]);
   object = (strobj *)calloc(tmp[1],sizeof(strobj));
@@ -42,7 +43,6 @@ int main(void)
   object[i].use_flag = -1;
   //printf("%d , %d\n",object[i].weight,object[i].value);
   }
-  start = clock();
   printf("execute qsort...value\n");
   qsort(object, table_size, sizeof(*object), comp_value);
   printf("execute qsort...weight\n");
@@ -79,7 +79,7 @@ int main(void)
     for(i = 0 ;i < table_size; i++){
       printf("%d , %d , %lf\n",object[i].weight,object[i].value,object[i].value_par_weight);
     }
-    */
+    /*
     /*
     for(i = 0 ;i < table_size; i++){
       printf("%d , %d , %lf\n",object[i].weight,object[i].value,object[i].value_par_weight);
@@ -88,7 +88,7 @@ int main(void)
     greedy_ans = greedy(nap_size,object,0,table_size,0);
     interim_solution = greedy_ans;
     printf("execute branch and bound...\n");
-    //ans = bab(nap_size,object,table_size,0,0);
+    ans = bab(nap_size,object,table_size,0,0);
     end = clock();
     printf("分枝限定法の解答は%d\n",ans);
     printf("%.6f秒かかりました\n",(double)(end-start)/CLOCKS_PER_SEC);

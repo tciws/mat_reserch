@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <time.h>
 #include "structure.h"
-#include "mpi.h"
 int greedy_ans = 0;
 int interim_solution = 0;
 int recursion_rank = 0;
@@ -32,10 +31,6 @@ int main(void)
     printf( "%sファイルが開けません\n", fname );
     return -1;
   }
-  ////////////////////////////////
-  MPI_Barrier(MPI_COMM_WORLD);
-  time_before = MPI_Wtime();
-  ///////////////////////////////
   fread(tmp,sizeof(int),2,fp); //ファイル先頭から，荷物の個数とナップサックのサイズを取得
   printf("ナップサックのサイズ->%d\n荷物の数->%d\n",tmp[0],tmp[1]);
   object = (strobj *)calloc(tmp[1],sizeof(strobj));
@@ -71,7 +66,7 @@ for(i = 0 ;i < 10; i++){
   //動的計画法
   //if(dt == 0){
       printf("execute dynamic programing...\n");
-      ans = dynamicprg(nap_size,table_size,object);
+      //ans = dynamicprg(nap_size,table_size,object);
       //end = clock();
       printf("動的計画法の解答は%d\n",ans);
       //printf("%.6f秒かかりました\n",(double)(end-start)/CLOCKS_PER_SEC);
@@ -94,16 +89,13 @@ for(i = 0 ;i < 10; i++){
     greedy_ans = greedy(nap_size,object,0,table_size,0);
     interim_solution = greedy_ans;
     printf("execute branch and bound...\n");
+    //ans = bfs(nap_size,object,table_size);
     ans = bab(nap_size,object,table_size,0,0);
     //end = clock();
     printf("分枝限定法の解答は%d\n",ans);
     //printf("%.6f秒かかりました\n",(double)(end-start)/CLOCKS_PER_SEC);
   //}
   //+++++++++++++++++++++++++++++++++++++
-  ///////////////////////////////////////
-  MPI_Barrier(MPI_COMM_WORLD);
-  time_after = MPI_Wtime();
-  ///////////////////////////////////////
   fclose( fp );
   free(object);
   return 0;
@@ -126,6 +118,7 @@ int comp_weight(const void *a, const void *b) {
   if(((strobj *)a)->weight > ((strobj *)b)->weight){
     return 1;
   }
+  return 0;
 }
 //-------------------------------------------------------------
 int comp_value(const void *a, const void *b) {
@@ -148,6 +141,7 @@ int comp_value_par_weight(const void *a, const void *b) {
   if(((strobj *)b)->value_par_weight > ((strobj *)a)->value_par_weight){
     return 1;
   }
+  return 0;
 }
 //-------------------------------------------------------------
 int datadel(int nap_size,int obj_max,strobj *object){
@@ -246,6 +240,7 @@ int max(int temp1, int temp2){
   if(temp2>temp1){
     return temp2;
   }
+  return 0;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //=======================================branch_and_bound===================================================
@@ -276,7 +271,7 @@ int bab(int nap_size,strobj *object,int table_size,int index,int interim_value){
   }else if(interim_solution == top){
       return interim_solution;
   }else{
-    //printf("#####################     LOG IN:0      #####################\n");
+    printf("#####################     LOG IN:0      #####################\n");
     //printf("\n object[%d] = %d\n\n",index,object[index].value);
     //printf("nap_size = %d,index = %d\n",nap_size,index);
     //printf("入れない時->interim_value=%d\n",interim_value);
@@ -287,14 +282,14 @@ int bab(int nap_size,strobj *object,int table_size,int index,int interim_value){
     }
     */
     if(interim_solution > top){
-      //printf("++++++++++++++++++++++++++++枝刈り++++++++++++++++++++++++++++++\n");
+      printf("++++++++++++++++++++++++++++枝刈り++++++++++++++++++++++++++++++\n");
       out = 0;
     }else{
       //printf("value1 = %d\n",interim_value);
       out = bab(nap_size,object,table_size,index+1,interim_value);
       //printf("out ->>->>->>->>->>->>->>->>->>->>->>- %d\n",out);
     //printf("  LOG OUT: index=%d\n", index);
-    //printf("#####################     LOG OUT: 0      #####################\n");
+    printf("#####################     LOG OUT: 0      #####################\n");
   //入れる時の処理
   if(table_size == index){
     in = interim_value;
@@ -304,7 +299,7 @@ int bab(int nap_size,strobj *object,int table_size,int index,int interim_value){
       //printf("ナップサックに入りません\n");
       in = 0;
     }else{
-          //printf("#####################    LOG IN:1     #####################\n");
+          printf("#####################    LOG IN:1     #####################\n");
           //printf("\n rrrrrrrobject[%d] = %d\n\n",index,object[index].value);
           //printf("入れる時->interim_value=%d\n",interim_value);
           //printf("value3 = %d\n",interim_value+object[index].value);
@@ -317,7 +312,7 @@ int bab(int nap_size,strobj *object,int table_size,int index,int interim_value){
           //in = bab(nap_size,object,table_size,index+1,interim_value)+object[index].value;
           //printf("in ->>->>->>->>->>->>->>->>->>->>->>- %d\n",in);
           }
-        //printf("#####################     LOG OUT:1     #####################\n");
+        printf("#####################     LOG OUT:1     #####################\n");
       }
     }
   }
@@ -325,8 +320,8 @@ int bab(int nap_size,strobj *object,int table_size,int index,int interim_value){
   //printf("in=%d,out=%d\n",in,out);
   ans = max(in,out);
   interim_solution = max(interim_solution,ans);
-  //printf("interim_solution = %d\n",interim_solution);
-  //printf("現在のナップサックサイズぞい！=%d\n",nap_size);
+  printf("interim_solution = %d\n",interim_solution);
+  printf("現在のナップサックサイズぞい！=%d\n",nap_size);
   //printf("\n\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@   暫定解=%d\n\n",ans);
   //printf("-----------------------       branch[%d] process end      -----------------------\n",recursion_rank);
   return ans;
@@ -366,7 +361,7 @@ float linear_relaxation(int nap_size,strobj *object,int index,int table_size,int
     }
   }
   tmp = value_count + value;
-  //printf("tmp = %d\n",tmp);
+  printf("tmp = %d\n",tmp);
   if(i < table_size){
     //printf("\nvalue>>%d,次の荷物はobject[%d]=%d,ナップサックのサイズは%d\n",tmp,i,object[i].weight,nap_size);
     ans= (float)tmp + (float)nap_size*object[i].value_par_weight;
@@ -376,4 +371,149 @@ float linear_relaxation(int nap_size,strobj *object,int index,int table_size,int
   //printf("\nvalue>>%d,次の荷物はありません,ナップサックのサイズは%d\n",tmp,nap_size);
     return (float)tmp;
   }
+}
+//////////////////////////幅優先探索////////////////////////////////
+void initialize(queue *q){
+        int i;
+
+        q->head=0;
+        q->tail=0;
+        for(i=0; i < N; ++i){
+                q->nap_size_array[i]=0;
+                q->interim_array[i]=0;
+                q->index_array[i]=0;
+        }
+}
+void enqueue(queue *q, IOdata item){
+        if (q->tail >= N) {
+                printf("This queue is full! \n");
+        }else{
+                q->nap_size_array[q->tail]=item.nap_size_data;
+                q->interim_array[q->tail]=item.interim;
+                q->index_array[q->tail]=item.que_index;
+                q->tail++;
+        }
+}
+IOdata dequeue(queue *q){
+        IOdata tmp,error;
+        error.nap_size_data = -1;
+        error.interim = -1;
+        error.que_index = -1;
+        if(q->head == q->tail){
+            printf("EMPTY queue\n");
+                return error;
+        }else{
+                tmp.nap_size_data=q->nap_size_array[q->head];
+                tmp.interim=q->interim_array[q->head];
+                tmp.que_index=q->index_array[q->head];
+                q->head++;
+                return tmp;
+        }
+        return error;
+}
+void show_queue(queue *q){
+  int i;
+  printf("==========================\n");
+  for(i = q->head; i<q->tail;i++){
+    printf("| %2d | %2d | %2d |\n",q->nap_size_array[i],q->interim_array[i],q->index_array[i]);
+    //printf("------------------------\n");
+  }
+    printf("++++++++++++++++++++++++\n");
+}
+int bfs(int nap_size,strobj *object,int table_size){
+  queue que,ans_q;
+  IOdata data,tmp;
+  int i,ans;
+  int tmp_ans;
+  initialize(&que);
+  data.nap_size_data = nap_size;
+  data.interim = 0;
+  data.que_index = 0;
+  printf("%d,%d,%d\n",data.nap_size_data,data.interim,data.que_index);
+
+  enqueue(&que,data); //エンキュー
+  i = 0;
+  while(1){
+    tmp = dequeue(&que);
+    printf("-----------------------     %d | branch[%d] process begin      -----------------------\n",i,tmp.que_index);
+    printf("%d|%d,%d,%d\n",i,tmp.nap_size_data,tmp.interim,tmp.que_index);
+    if(tmp.interim == -1 || tmp.que_index >= 5){
+      break;
+    }
+    //ans = max(ans,tmp.interim);
+    //printf("答えは%d,%d\n",ans,tmp.interim);
+    /*
+    if(tmp.que_index <= -1){
+      data.nap_size_data = tmp.nap_size_data;
+      data.interim = tmp.interim;
+      data.que_index = tmp.que_index + 1;
+      //printf("%d,#%d,%d\n",data.nap_size_data,data.interim,data.que_index);
+      enqueue(&que,data);
+      */
+    //}else{
+      if(3 >= tmp.que_index){
+      if(tmp.nap_size_data < object[tmp.que_index].weight){
+        if(tmp.nap_size_data == 0){
+            printf("ナップサックに入りません\n");
+        }else{
+          //ナップサックサイズ残量より小さいときの処理
+            //printf("##%d\n",i);
+            printf("ナップサックに入りません\n");
+            data.nap_size_data = tmp.nap_size_data;
+            data.interim = tmp.interim;
+            data.que_index = tmp.que_index + 1;
+            //printf("%d,#%d,%d\n",data.nap_size_data,data.interim,data.que_index);
+            enqueue(&que,data);
+        }
+        }else{
+            printf("-----------------\n現在の荷物\n重さ%2d\n価値%2d\n-----------------\n",object[tmp.que_index].weight,object[tmp.que_index].value);
+              data.nap_size_data = tmp.nap_size_data;
+              data.interim = tmp.interim;
+              data.que_index = tmp.que_index + 1;
+              //printf("%d,#%d,%d\n",data.nap_size_data,data.interim,data.que_index);
+              enqueue(&que,data);
+
+              data.nap_size_data = tmp.nap_size_data - object[tmp.que_index].weight;
+              data.interim = tmp.interim+object[tmp.que_index].value;
+              data.que_index = tmp.que_index + 1;
+              //printf("%d,#%d,%d\n",data.nap_size_data,data.interim,data.que_index);
+              enqueue(&que,data);
+          }
+      }else{
+          printf("葉に到達しました\n");
+          enqueue(&ans_q,tmp);
+      }
+    //}
+    //printf("-----------------------     %d | branch[%d] process end      -----------------------\n",i,tmp.que_index);
+    i++;
+  }
+  /*
+  data.nap_size_data = 1;
+  data.interim = 10;
+  data.que_index = 100;
+  initialize(&que);
+  for(i=0;i<N;i++){
+    enqueue(&que,data);
+  }
+  for(i=0;i<7;i++){
+    tmp = dequeue(&que);
+    printf("%dをデキューしました1\n",tmp.nap_size_data);
+    printf("%dをデキューしました2\n",tmp.interim);
+    printf("%dをデキューしました3\n",tmp.que_index);
+  }
+  */
+  show_queue(&ans_q);
+  while(1){
+      tmp = dequeue(&ans_q);
+      if(tmp.nap_size_data == -1 && tmp.interim == -1 && tmp.que_index == -1){
+        break;
+      }
+        show_queue(&ans_q);
+        tmp_ans = bab(tmp.nap_size_data,object,table_size,tmp.que_index,tmp.interim);
+        printf("答えは%d\n",tmp_ans);
+        ans=max(ans,tmp_ans);
+  }
+  //show_queue(&ans_q);
+  printf("答えは%d\n",ans);
+  return ans;
 }
